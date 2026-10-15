@@ -35,6 +35,12 @@ for index, line in enumerate(lines):
         if path.startswith('/'):
             subprocess.run(['install_name_tool', '-delete_rpath', path, binary], check=True)
 PY
+if [[ "$BUILD_MODE" == release ]]; then
+    # Keep crash-symbolication data outside the distributed app.
+    xcrun dsymutil "$APP_DIR/Contents/MacOS/HomeControl" -o "$PWD/build/HomeControl.app.dSYM"
+    # Remove debug symbol entries that retain local source and object-file paths.
+    xcrun strip -S "$APP_DIR/Contents/MacOS/HomeControl"
+fi
 if [[ -f assets/HomeControl.icns ]]; then
     cp assets/HomeControl.icns "$APP_DIR/Contents/Resources/HomeControl.icns"
 fi

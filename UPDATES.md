@@ -9,7 +9,7 @@ Sem configuração, o app funciona normalmente e não inicia o atualizador. Para
 O script de build usa `config/updates.json` por padrão. A conta de assinatura é `br.com.homecontrol.updates` no Chaves do mantenedor. Incremente as versões em `Info.plist`, gere o pacote e publique os assets na mesma release:
 
 ```sh
-./scripts/prepare-release.sh config/updates.json https://github.com/alephscalioni/homecontrol_macos/releases/download/v0.3.1/
+./scripts/prepare-release.sh config/updates.json https://github.com/alephscalioni/homecontrol_macos/releases/download/v0.3.2/
 ```
 
 O `appcast.xml` assinado deve ser um asset da release marcada como **Latest**. O endereço `releases/latest/download/appcast.xml` permanece estável; o ZIP de cada versão usa uma URL versionada. Publique os arquivos completos como rascunho antes de tornar a release Latest. Não substitua os bytes de um ZIP já assinado.
