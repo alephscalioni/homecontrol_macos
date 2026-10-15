@@ -14,6 +14,7 @@ build/
 *.p12
 *.p8
 *.mobileprovision
+*.dSYM/
 release-private/
 .updates-test/
 .vscode/

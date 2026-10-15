@@ -42,7 +42,7 @@ Incremente `CFBundleVersion` em `Info.plist` a cada versão e atualize `CFBundle
 ./scripts/prepare-release.sh config/updates.local.json https://downloads.example.org/homecontrol/
 ```
 
-O comando usa a conta `br.com.homecontrol.updates` do Chaves. Uma conta diferente pode ser passada como terceiro argumento. Ele confere se a chave pública corresponde à conta, empacota o app, gera as assinaturas e verifica o feed. A saída fica em `build/updates/`; nada é enviado para a internet pelo script.
+O comando usa a conta `br.com.homecontrol.updates` do Chaves. Uma conta diferente pode ser passada como terceiro argumento. Ele confere se a chave pública corresponde à conta, empacota o app, gera as assinaturas e verifica o feed. A saída fica em `build/updates/VERSÃO-BUILD/`, isolada por versão para preservar os endereços dos ZIPs. Nada é enviado para a internet pelo script.
 
 Publique o ZIP no endereço de download informado e publique `appcast.xml` exatamente no `feedURL`. Não edite o XML após a assinatura. Em GitHub, os ZIPs podem ficar em Releases e o feed em Pages; os endereços precisam ser acessíveis ao atualizador.
 
@@ -58,6 +58,15 @@ HOMECONTROL_UPDATE_CONFIG=config/updates.local.json ./scripts/build-app.sh
 ```
 
 O script assina os componentes internos do Sparkle antes do app. Notarização e publicação dependem das credenciais e da infraestrutura do mantenedor; não são executadas automaticamente. Assinatura Apple e assinatura Ed25519 das atualizações são mecanismos diferentes.
+
+Depois de notarizar e exportar o app pelo Xcode, empacote essa cópia sem recompilar ou alterar a assinatura e o ticket da Apple:
+
+```sh
+HOMECONTROL_PREBUILT_APP='/caminho/da/exportacao/HomeControl.app' \
+./scripts/prepare-release.sh config/updates.json https://github.com/alephscalioni/homecontrol_macos/releases/download/v0.3.2/
+```
+
+O script verifica a assinatura do app e sua configuração de atualizações antes de empacotar. Confira também `xcrun stapler validate` e `spctl --assess --type execute` na cópia exportada antes de publicar. Os símbolos de depuração (`.dSYM`) ficam fora do `.app` e não devem ser publicados com os downloads.
 
 Antes de anunciar o canal como funcional, teste uma versão antiga instalada recebendo a nova: descoberta, download, validação, substituição e relançamento. A integração e o pacote podem ser validados localmente; a entrega automática pela internet só pode ser confirmada depois de configurar e publicar o canal.
 
