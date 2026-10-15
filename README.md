@@ -1,92 +1,53 @@
 # HomeControl
 
-App nativo da barra de menus do Mac para controlar uma casa integrada ao Home Assistant. Interface em português, com a composição da referência e glassmorfismo: desfoque nativo do macOS, vidro escuro translúcido e bordas suaves. A opção Reduzir Transparência do sistema é respeitada.
+Controle os dispositivos do seu Home Assistant pela barra de menus do Mac. Ajuste o ar-condicionado, acenda as luzes e acesse os controles de cada cômodo sem abrir o navegador.
 
-## Instalar
+## Instalação
 
-Baixe o ZIP da [última versão](https://github.com/alephscalioni/homecontrol_macos/releases/latest), extraia `HomeControl.app` e mova para a pasta Aplicativos. O pacote inicial atende Macs com Apple Silicon e macOS 14 ou superior.
+Requer um Mac com Apple Silicon (M1 ou posterior) e macOS 14 ou superior. Seu Home Assistant precisa estar configurado e acessível pelo Mac.
 
-Para compilar do código-fonte, dê dois cliques em `Abrir HomeControl.command` ou execute `./scripts/build-app.sh` e abra `build/HomeControl.app`.
+1. [Baixe a versão mais recente](https://github.com/alephscalioni/homecontrol_macos/releases/latest).
+2. Extraia o ZIP e mova **HomeControl.app** para a pasta **Aplicativos**.
+3. Abra o app. Uma casa aparecerá na barra de menus; clique nela para abrir os controles.
 
-O ícone de uma casa aparece na barra de menus. Na primeira abertura, configure sua conexão ou selecione **Explorar demonstração**. A demonstração usa dados de exemplo e não envia comandos à sua casa.
+Para conhecer o app antes de conectar sua casa, escolha **Explorar demonstração**. Essa opção mostra aparelhos de exemplo.
 
-## Conectar sua casa
+## Conectar ao Home Assistant
 
-1. Informe o endereço do seu Home Assistant, por exemplo `http://homeassistant.local:8123` ou seu endereço HTTPS.
-2. No Home Assistant, abra seu **Perfil → Segurança → Tokens de acesso de longa duração** e crie um token para o HomeControl.
-3. Cole o token no campo protegido do aplicativo e clique em **Conectar ao Home Assistant**.
+Na primeira abertura:
 
-O token é salvo no Chaves do macOS depois que a conexão funciona. As preferências guardam o endereço, os IDs dos favoritos e as escolhas locais de organização. Use **Esquecer conexão** para remover o token salvo desta instância. Endereços HTTP locais e HTTPS são aceitos; certificados inválidos não são ignorados. O app não publica seu Home Assistant na internet.
+1. Informe o endereço do seu Home Assistant, como `http://homeassistant.local:8123` ou o endereço HTTPS que você já utiliza.
+2. No Home Assistant, abra seu **Perfil → Segurança → Tokens de acesso de longa duração** e crie um token com o nome HomeControl. Esse código autoriza o app a acessar sua casa.
+3. Copie o token, cole no campo indicado e clique em **Conectar ao Home Assistant**.
 
-Os dispositivos e seus estados vêm do servidor. O app acompanha mudanças em tempo real e tenta reconectar quando a conexão cai ou o Mac desperta. Durante uma interrupção, os dados ficam identificados como desatualizados e os comandos são desativados. Um comando aceito pelo servidor não significa que o aparelho já confirmou o novo estado.
+Seus dispositivos e cômodos aparecerão após a conexão. Não é necessário instalar uma integração adicional no Home Assistant.
 
-## Controles
+## Usar os controles
 
-O painel tem três abas e um único ícone de largura fixa na barra de menus:
+O app tem três abas:
 
-- **Ar-condicionado:** seletor por cômodo, temperatura individual ou faixa, modo, velocidade, perfis, Eco e direção do ar, conforme as capacidades. Ao arrastar a temperatura, o número acompanha a escolha; o ajuste é enviado ao soltar. O fluxo de ar é animado e respeita Reduzir Movimento.
-- **Cômodos:** controles e leituras do ambiente aparecem primeiro. Consumo, horários, manutenção, configurações, diagnóstico e outras leituras ficam em seções recolhidas. A busca encontra itens de todos os grupos. **Toda a casa** reúne os itens; **Geral da casa** distingue cenas e serviços globais; **Sem cômodo** mostra localizações ainda não atribuídas.
-- **Favoritos:** reúne os itens marcados com estrela, incluindo leituras técnicas escolhidas explicitamente.
+- **Ar-condicionado:** escolha o cômodo e ajuste a temperatura, o modo, a velocidade e a direção do ar. Arraste a barra de temperatura e solte para confirmar, ou use os botões **−** e **+**.
+- **Cômodos:** abra um ambiente para acessar luzes, tomadas, interruptores, cortinas, ventiladores e leituras dos sensores. Clique no nome de um aparelho para abrir seus detalhes.
+- **Favoritos:** reúna os itens que você usa com mais frequência. Para adicionar ou remover um favorito, clique na estrela do item.
 
-Dentro dos cômodos é possível ligar interruptores e tomadas, abrir detalhes de luzes (brilho e temperatura de branco), cortinas e ventiladores, e ativar cenas. O botão de voltar retorna ao cômodo ou aos favoritos de origem.
+As opções disponíveis dependem dos recursos de cada aparelho. É possível ligar, desligar e ajustar o brilho de luzes RGB. A escolha de cores, câmeras, multimídia, fechaduras e alarmes ainda não têm controles no app.
 
-**Organizar** revela o menu de cada item para mudar sua classificação ou ocultá-lo no app. Itens ocultos podem ser restaurados nessa mesma tela. Essas escolhas ficam neste Mac, separadas por servidor e pelos IDs estáveis das entidades. Itens ocultos/desativados no HA são respeitados; a organização local não os reativa. A classificação usa metadados do registro e classes/unidades dos sensores, com regras específicas para temporizadores e manutenção; itens desconhecidos vão para Outras leituras.
+## Organizar sua casa
 
-Consumo separa energia acumulada de potência instantânea e conserva unidade e período (por exemplo, ontem e este mês). O app não soma contadores de períodos ou aparelhos diferentes.
+Os cômodos seguem as áreas cadastradas no Home Assistant. Quando você altera uma área por lá, o HomeControl atualiza a organização automaticamente. Itens sem uma área atribuída aparecem em **Sem cômodo**.
 
-Luzes RGB têm controle de energia e brilho; escolha de cor RGB, câmeras, multimídia, fechaduras e alarmes não estão implementados. As áreas dependem da permissão de leitura dos registros do Home Assistant; se indisponíveis, a aba Ar-condicionado e os favoritos continuam acessíveis pelo nome. Não é necessário instalar uma integração no servidor.
+Dentro de um cômodo, os controles do dia a dia aparecem primeiro. Leituras de consumo, manutenção e outras informações ficam em seções que você pode expandir quando precisar.
 
-## Desenvolvimento
+Use **Organizar** para mudar a classificação de um item ou ocultá-lo. É possível restaurar os itens ocultos nessa mesma tela. Essas preferências ficam salvas neste Mac.
 
-Requer macOS 14+ e Xcode/Swift 6 ou superior. O pacote usa Sparkle para as atualizações do aplicativo; o Swift Package Manager resolve a versão fixada em Package.resolved.
+## Atualizar o app
 
-```sh
-swift build
-swift run HomeControl --demo --window
-./scripts/build-app.sh
-open build/HomeControl.app
-```
+Quando o HomeControl perguntar sobre atualizações, permita a busca automática e marque a opção de baixar e instalar novas versões. Para procurar uma atualização manualmente, abra o menu **⋯ → Verificar atualizações…**.
 
-`--demo` usa exclusivamente os exemplos locais; `--window` abre uma janela para inspeção. Sem essas opções, o app funciona pela barra de menus. O script empacota os recursos. Sem identidade de assinatura configurada, usa assinatura ad hoc local; a assinatura Developer ID e a notarização dependem da configuração de distribuição. Consulte as notas da release para os requisitos e o estado do pacote publicado.
+A conexão com o Home Assistant e suas preferências são mantidas ao atualizar.
 
-## Verificação
+## Conexão e privacidade
 
-```sh
-swift test                    # modelo e capacidades; testes de conexão pulados sem fixture
-./scripts/test-integration.sh # inicia um servidor WebSocket local e executa todos os testes
-```
+O token de acesso fica guardado no **Chaves do macOS**. Para removê-lo deste Mac, abra as configurações do HomeControl e escolha **Esquecer conexão**.
 
-Os testes de conexão validam autenticação, assinatura de eventos, reconciliação com o snapshot, remoções, alvo do comando, recusa do serviço, timeout, cancelamento e queda de conexão. O servidor simulado escuta somente em `127.0.0.1`. Não use um endereço real em `HA_TEST_SERVER`.
-
-## Organização e sincronização
-
-O app usa as áreas do Home Assistant. Uma área explícita da entidade prevalece; caso contrário, ela herda o cômodo do dispositivo. Isso permite que cada canal de um interruptor compartilhado fique no ambiente correto.
-
-Mudanças nas áreas, dispositivos e entidades são acompanhadas por eventos. A cada minuto, o app também confere novamente os registros. Os nomes e vínculos atualizam sem reiniciar. Se a leitura falhar, o app avisa e conserva a última organização recebida; a falha não é apresentada como uma casa vazia.
-
-A CLI usa a conexão salva no app e lê o token diretamente do Chaves, sem argumento ou variável de ambiente com credenciais:
-
-```sh
-swift run HomeControlCLI inventory .homeassistant/inventario.json
-swift run HomeControlCLI apply .homeassistant/plano.json
-```
-
-O inventário é somente leitura. A aplicação de um plano exige administrador, verifica os vínculos anteriores, guarda arquivos privados antes/depois e um plano de reversão, altera somente `area_id` e relê os registros para conferir. O plano de reversão pode ser passado ao mesmo comando `apply`; as precondições impedem sobrescrever uma organização que tenha mudado desde então. Não há renomeação de IDs nem envio de serviços para acionar aparelhos. Arquivos locais da casa ficam em `.homeassistant/`, ignorada pelo projeto.
-
-O repositório não inclui conexão, inventário, capturas ou backups de uma casa real. Os exemplos são sintéticos; os testes de protocolo e acionamento usam o servidor simulado e a demonstração.
-
-## Atualizações do aplicativo
-
-As versões distribuídas usam o feed assinado do GitHub Releases. O usuário pode autorizar a busca e instalação automáticas; o menu também oferece **Verificar atualizações…**. A chave privada de publicação permanece no Chaves do mantenedor. Para publicar uma versão ou configurar um fork, consulte [UPDATES.md](UPDATES.md).
-
-## Privacidade do repositório
-
-O código não inclui os dados de uma instalação real. Credenciais e preferências ficam fora do projeto, no armazenamento local do macOS. Inventários, capturas, builds e configurações locais devem permanecer fora das publicações; consulte [SECURITY.md](SECURITY.md).
-
-## Referências
-
-- [WebSocket API do Home Assistant](https://developers.home-assistant.io/docs/api/websocket/)
-- [Capacidades de climatização](https://developers.home-assistant.io/docs/core/entity/climate/)
-- [Tokens e autenticação](https://developers.home-assistant.io/docs/auth_api/)
-
-A imagem do ar-condicionado foi criada com a ferramenta integrada de geração de imagens. O prompt e a origem estão em `assets/air-conditioner.prompt.txt` e nos metadados do PNG. O ícone usa SF Symbols e pode ser recriado com `scripts/make-icon.swift`.
+Se a conexão cair, o app avisa e tenta reconectar. Os controles ficam indisponíveis até a conexão voltar. Você também pode usar **⋯ → Reconectar** para tentar novamente.
