@@ -6,6 +6,8 @@ Controle os dispositivos do seu Home Assistant pela barra de menus do Mac. Ajust
 
 Requer um Mac com Apple Silicon (M1 ou posterior) e macOS 14 ou superior. Seu Home Assistant precisa estar configurado e acessível pelo Mac.
 
+A versão atual está assinada pelo desenvolvedor, mas a notarização da Apple ainda está pendente. O macOS pode bloquear sua abertura.
+
 1. [Baixe a versão mais recente](https://github.com/alephscalioni/homecontrol_macos/releases/latest).
 2. Extraia o ZIP e mova **HomeControl.app** para a pasta **Aplicativos**.
 3. Abra o app. Uma casa aparecerá na barra de menus; clique nela para abrir os controles.
