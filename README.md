@@ -80,3 +80,4 @@ O repositório não inclui conexão, inventário, capturas ou backups de uma cas
 - [Tokens e autenticação](https://developers.home-assistant.io/docs/auth_api/)
 
 A imagem do ar-condicionado foi criada com a ferramenta integrada de geração de imagens. O prompt e a origem estão em `assets/air-conditioner.prompt.txt` e nos metadados do PNG. O ícone usa SF Symbols e pode ser recriado com `scripts/make-icon.swift`.
+# homecontrol_macos
