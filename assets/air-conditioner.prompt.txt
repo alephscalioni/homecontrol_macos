@@ -1,0 +1,4 @@
+Use case: product-mockup. Create one production UI asset, a photorealistic 3D studio render of a modern white wall-mounted split air conditioner, isolated on true transparent background. Three-quarter front perspective, looking very slightly up, showing a slim right side, white satin plastic shell and dark open louver along the bottom. No wall, no room, no shadow on ground, no text, no logo, no brand, no glow, no visible airflow. Entire unit fully contained, centered, generous clear transparent margin, roughly 3:1 device width-to-height. Soft neutral studio highlights, crisp realistic product detail suitable for scaling to 190 px width on a near-black macOS control panel. Landscape image. This is only the air conditioner object, no interface.
+
+Generated with the built-in image_gen tool on 2026-10-15, transparent_background=true.
+Shipping asset: Sources/HomeControl/Resources/air-conditioner.png

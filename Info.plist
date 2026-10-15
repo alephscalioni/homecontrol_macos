@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+    <key>CFBundleName</key><string>HomeControl</string>
+    <key>CFBundleDisplayName</key><string>HomeControl</string>
+    <key>CFBundleIdentifier</key><string>br.com.homecontrol.mac</string>
+    <key>CFBundleExecutable</key><string>HomeControl</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleVersion</key><string>4</string>
+    <key>CFBundleShortVersionString</key><string>0.3.1</string>
+    <key>CFBundleIconFile</key><string>HomeControl</string>
+    <key>LSMinimumSystemVersion</key><string>14.0.0</string>
+    <key>LSUIElement</key><true/>
+    <key>NSHighResolutionCapable</key><true/>
+    <key>NSLocalNetworkUsageDescription</key><string>O HomeControl se conecta ao Home Assistant da sua casa para exibir e controlar seus aparelhos.</string>
+    <key>NSAppTransportSecurity</key><dict><key>NSAllowsArbitraryLoads</key><true/></dict>
+</dict></plist>

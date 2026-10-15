@@ -1,0 +1,689 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-15T14:15:46Z",
+  "title": "Design System: HomeControl",
+  "extensions": {
+    "native": {
+      "platform": "macOS",
+      "frameworks": [
+        "SwiftUI",
+        "AppKit"
+      ],
+      "surface": "Aplicativo nativo da barra de menus; composição fixada pela referência fornecida.",
+      "units": "Medidas pt representam pontos lógicos do SwiftUI. Pesos tipográficos são nomes nativos do SwiftUI.",
+      "primitiveAuthority": "Frontmatter de DESIGN.md, extraído das fontes Swift. As strings RGBA transportam os canais originais; não indicam uma implementação CSS.",
+      "sources": [
+        "Sources/HomeControl/PanelView.swift",
+        "Sources/HomeControl/RoomsView.swift",
+        "Sources/HomeControl/DeviceListView.swift",
+        "Sources/HomeControl/DeviceViews.swift",
+        "Sources/HomeControl/Theme.swift",
+        "Sources/HomeControl/App.swift"
+      ],
+      "extraction": "Leitura estática das fontes; sem browsing, testes, delegação ou automação de UI.",
+      "layout": {
+        "width": "{components.panel.width}",
+        "height": "{components.panel.height}",
+        "behavior": "Painel fixo com conteúdo rolável; nenhuma variante móvel ou breakpoint implementado nas fontes lidas."
+      },
+      "assetProvenance": {
+        "airConditioner": {
+          "resource": "air-conditioner.png",
+          "kind": "generated",
+          "authority": "Instrução explícita do usuário nesta tarefa.",
+          "purpose": "Ilustração decorativa; não é fotografia de um aparelho físico conectado.",
+          "fallback": "SF Symbol air.conditioner.horizontal.fill",
+          "source": "Sources/HomeControl/DeviceViews.swift#AirConditionerView"
+        },
+        "demo": {
+          "label": "Demonstração",
+          "condition": "store.isDemo",
+          "source": "Sources/HomeControl/PanelView.swift#header"
+        }
+      },
+      "limits": [
+        "Reconciliação estática das seis fontes permitidas; sem verificação visual, do registro ao vivo ou da implementação interna do store.",
+        "Não há rampas tonais autoradas nas fontes lidas; nenhuma foi sintetizada.",
+        "Aparência final do material e sombras nativas depende do macOS e do conteúdo atrás da janela."
+      ],
+      "contextSources": [
+        "PRODUCT.md",
+        ".impeccable/rooms-surface-contract.md"
+      ],
+      "preservedEvidence": "Registros anteriores de SetupView.swift preservados sem nova leitura; paleta, tipografia e material mantidos integralmente.",
+      "menuBar": {
+        "implementation": "NSStatusItem.squareLength",
+        "symbol": "house.fill",
+        "imagePosition": ".imageOnly",
+        "template": true,
+        "behavior": "Largura quadrada fixa, sem temperatura variável na barra.",
+        "source": "Sources/HomeControl/App.swift#applicationDidFinishLaunching"
+      },
+      "roomInteraction": {
+        "deviceTarget": "Whole row button, minimum height 44pt; separate power/favorite controls.",
+        "sectionTarget": "Whole section-header button, minimum height 40pt; chevron is an indicator.",
+        "missingTemperature": "Climate without a reported target temperature shows an explanation rather than an inert slider."
+      },
+      "softwareUpdates": {
+        "implementation": "Sparkle 2.10.0 standard native interface, configured by maintainer",
+        "entryPoint": "Optional Verificar atualizações… item in the existing menu",
+        "inactive": "No feed/public key configured or demo mode",
+        "sources": [
+          "Sources/HomeControl/AppUpdater.swift",
+          "Sources/HomeControl/PanelView.swift"
+        ]
+      }
+    },
+    "colorMeta": {
+      "background": {
+        "role": "neutral",
+        "displayName": "Fundo escuro opaco",
+        "source": "Sources/HomeControl/Theme.swift#Palette.background"
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Branco translúcido de superfície",
+        "source": "Sources/HomeControl/Theme.swift#Palette.surface"
+      },
+      "raised": {
+        "role": "neutral",
+        "displayName": "Branco translúcido elevado",
+        "source": "Sources/HomeControl/Theme.swift#Palette.raised"
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Oliva-taupe",
+        "source": "Sources/HomeControl/Theme.swift#Palette.accent"
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Marfim principal",
+        "source": "Sources/HomeControl/Theme.swift#Palette.text"
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "Texto auxiliar quente",
+        "source": "Sources/HomeControl/Theme.swift#Palette.secondary"
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Linha branca translúcida",
+        "source": "Sources/HomeControl/Theme.swift#Palette.line"
+      },
+      "good": {
+        "role": "status",
+        "displayName": "Verde de conexão",
+        "source": "Sources/HomeControl/Theme.swift#Palette.good"
+      },
+      "warning": {
+        "role": "status",
+        "displayName": "Âmbar de aviso",
+        "source": "Sources/HomeControl/Theme.swift#Palette.warning"
+      },
+      "glass-tint": {
+        "role": "neutral",
+        "displayName": "Tint preto do vidro",
+        "source": "Sources/HomeControl/Theme.swift#NativeGlass.makeNSView"
+      },
+      "glass-edge": {
+        "role": "neutral",
+        "displayName": "Borda fina dos controles",
+        "source": "Sources/HomeControl/Theme.swift#GlassSurface"
+      },
+      "panel-edge-start": {
+        "role": "neutral",
+        "displayName": "Brilho inicial do painel",
+        "source": "Sources/HomeControl/PanelView.swift#body"
+      },
+      "panel-edge-middle": {
+        "role": "neutral",
+        "displayName": "Brilho intermediário do painel",
+        "source": "Sources/HomeControl/PanelView.swift#body"
+      },
+      "panel-edge-end": {
+        "role": "neutral",
+        "displayName": "Brilho final do painel",
+        "source": "Sources/HomeControl/PanelView.swift#body"
+      }
+    },
+    "typographyMeta": {
+      "temperature": {
+        "purpose": "Temperatura desejada única.",
+        "nativeModifier": ".monospacedDigit()",
+        "source": "Sources/HomeControl/DeviceViews.swift#ClimateView"
+      },
+      "temperature-range": {
+        "purpose": "Temperaturas mínima e máxima na mesma leitura.",
+        "nativeModifier": ".monospacedDigit()",
+        "source": "Sources/HomeControl/DeviceViews.swift#ClimateView"
+      },
+      "temperature-unit": {
+        "purpose": "Unidade ao lado da temperatura.",
+        "source": "Sources/HomeControl/DeviceViews.swift#ClimateView"
+      },
+      "setup-title": {
+        "purpose": "Título de conexão.",
+        "source": "Sources/HomeControl/SetupView.swift#body"
+      },
+      "device-title": {
+        "purpose": "Área ou nome do aparelho no cabeçalho do detalhe.",
+        "source": "Sources/HomeControl/PanelView.swift#deviceHeader"
+      },
+      "body": {
+        "purpose": "Descrição de conexão e campos.",
+        "setupDescriptionLineSpacingPt": 4,
+        "source": "Sources/HomeControl/SetupView.swift#body"
+      },
+      "action": {
+        "purpose": "Ação proeminente de conexão.",
+        "source": "Sources/HomeControl/SetupView.swift#body"
+      },
+      "label": {
+        "purpose": "Rótulos de controles e ações de cortina.",
+        "source": "Sources/HomeControl/DeviceViews.swift"
+      },
+      "field-label": {
+        "purpose": "Rótulos de endereço e token.",
+        "source": "Sources/HomeControl/SetupView.swift#body"
+      },
+      "option-value": {
+        "purpose": "Valor da opção, Eco e marca HomeControl.",
+        "source": "Sources/HomeControl/Theme.swift#OptionTile"
+      },
+      "caption": {
+        "purpose": "Leituras auxiliares, ajuda e avisos.",
+        "tokenHelpLineSpacingPt": 3,
+        "source": "Sources/HomeControl/SetupView.swift#body"
+      },
+      "micro": {
+        "purpose": "Rodapé, limites do slider e informações pequenas.",
+        "source": "Sources/HomeControl/PanelView.swift#footer"
+      },
+      "badge": {
+        "purpose": "Selo de demonstração e título de opção.",
+        "sources": [
+          "Sources/HomeControl/PanelView.swift#header",
+          "Sources/HomeControl/Theme.swift#OptionTile"
+        ]
+      }
+    },
+    "materials": [
+      {
+        "name": "native-glass",
+        "implementation": "NSVisualEffectView em NSViewRepresentable",
+        "material": ".hudWindow",
+        "blendingMode": ".behindWindow",
+        "state": ".active",
+        "appearance": ".darkAqua",
+        "tintLayer": {
+          "implementation": "NSView com CALayer acima do efeito",
+          "color": "{colors.glass-tint}"
+        },
+        "blurRadius": "Controlado pelo macOS; nenhum raio explícito no código.",
+        "reduceTransparency": {
+          "environment": "accessibilityReduceTransparency",
+          "behavior": "Substitui NativeGlass por fundo opaco; preserva preenchimentos e contornos dos controles.",
+          "fallbackColor": "{colors.background}"
+        },
+        "sources": [
+          "Sources/HomeControl/Theme.swift#NativeGlass",
+          "Sources/HomeControl/PanelView.swift#body"
+        ]
+      }
+    ],
+    "borders": [
+      {
+        "name": "panel-edge",
+        "widthPt": 0.75,
+        "colors": [
+          "{colors.panel-edge-start}",
+          "{colors.panel-edge-middle}",
+          "{colors.panel-edge-end}"
+        ],
+        "direction": ".topLeading → .bottomTrailing",
+        "shape": "RoundedRectangle(cornerRadius: {rounded.panel-track})",
+        "source": "Sources/HomeControl/PanelView.swift#body"
+      },
+      {
+        "name": "glass-control-edge",
+        "widthPt": 0.75,
+        "color": "{colors.glass-edge}",
+        "implementation": "RoundedRectangle.strokeBorder",
+        "source": "Sources/HomeControl/Theme.swift#GlassSurface"
+      }
+    ],
+    "shadows": [
+      {
+        "name": "slider-thumb",
+        "value": ".shadow(color: .black.opacity(0.35), radius: 3, y: 2)",
+        "purpose": "Sombra explícita do puxador; parâmetros nativos em pontos, sem conversão para box-shadow.",
+        "source": "Sources/HomeControl/Theme.swift#ControlSlider"
+      },
+      {
+        "name": "system-window-popover",
+        "value": "OS-owned",
+        "purpose": "Sombras nativas de janela e popover pertencem ao macOS/AppKit; as views inspecionadas não definem parâmetros próprios para elas.",
+        "sources": [
+          "Sources/HomeControl/Theme.swift#NativeGlass",
+          "Sources/HomeControl/PanelView.swift#deviceHeader",
+          "Sources/HomeControl/Theme.swift#OptionTile"
+        ]
+      }
+    ],
+    "motion": [
+      {
+        "name": "airflow",
+        "value": "TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion || !visible))",
+        "purpose": "Trilhas tênues e filetes curtos descendentes abaixo da ilustração, apenas com entidade ligada e disponível.",
+        "runningCondition": "entity.isOn && entity.available",
+        "rendering": {
+          "implementation": "Canvas",
+          "trajectoryCount": 28,
+          "wispsPerTrajectory": 3,
+          "direction": "Descendente",
+          "trailLineWidthPt": 1.2,
+          "wispLineWidthPt": 2.1,
+          "wispLineCap": ".round",
+          "blurRadiusPt": 1.5,
+          "gradient": [
+            {
+              "color": "{colors.text}",
+              "opacity": 0.14
+            },
+            {
+              "color": "{colors.text}",
+              "opacity": 0.05
+            },
+            {
+              "nativeColor": ".clear"
+            }
+          ],
+          "wispOpacity": "sin(head * .pi) * 0.20",
+          "headProgress": "(time * 0.42 + seed * 0.137 + Double(wisp) / 3).truncatingRemainder(dividingBy: 1)"
+        },
+        "reduceMotion": {
+          "environment": "accessibilityReduceMotion",
+          "behavior": "Timeline pausada e time = 0; trilhas e filetes permanecem estáticos enquanto running for verdadeiro."
+        },
+        "sources": [
+          "Sources/HomeControl/DeviceViews.swift#ClimateView",
+          "Sources/HomeControl/DeviceViews.swift#AirConditionerView"
+        ],
+        "visibility": {
+          "state": "visible",
+          "onAppear": true,
+          "onDisappear": false,
+          "behavior": "Timeline pausada quando !visible."
+        }
+      }
+    ],
+    "interactionStates": {
+      "tactileButton": {
+        "restOpacity": 1,
+        "pressedOpacity": 0.72,
+        "disabledOpacity": 0.4,
+        "customHover": false,
+        "customFocusRing": false,
+        "source": "Sources/HomeControl/Theme.swift#TactileButtonStyle"
+      },
+      "slider": {
+        "restStroke": {
+          "color": "{colors.line}",
+          "widthPt": 1
+        },
+        "focusStroke": {
+          "color": "{colors.accent}",
+          "widthPt": 2
+        },
+        "disabledOpacity": 0.4,
+        "focusableCondition": "enabled && value != nil",
+        "input": "Arrasto com onPreview e commit somente ao terminar; onMoveCommand com setas, menos/mais e accessibilityAdjustableAction enviam ajustes diretamente.",
+        "source": "Sources/HomeControl/Theme.swift#ControlSlider",
+        "previewReset": "onPreview(nil) ao terminar o arrasto e em onDisappear."
+      },
+      "setupFields": {
+        "focus": "FocusState: Return no endereço seleciona token; Return no token chama connect.",
+        "customFocusBorder": false,
+        "customErrorBorder": false,
+        "source": "Sources/HomeControl/SetupView.swift#body"
+      },
+      "deviceDetail": {
+        "disabledCondition": "!store.canControl || !entity.available || store.pendingEntities.contains(entity.id)",
+        "source": "Sources/HomeControl/PanelView.swift#body"
+      },
+      "global": "Sem curva de easing ou duração global autorada nas fontes lidas. Controles .plain não têm tratamento de hover customizado."
+    }
+  },
+  "components": [
+    {
+      "name": "Painel de vidro fumê",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Composição fixa da barra de menus, com cabeçalho, conteúdo rolável, aviso eventual e rodapé.",
+      "native": {
+        "symbol": "PanelView",
+        "source": "Sources/HomeControl/PanelView.swift#PanelView",
+        "material": "extensions.materials.native-glass",
+        "border": "extensions.borders.panel-edge",
+        "colorScheme": ".dark"
+      }
+    },
+    {
+      "name": "Botão proeminente",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ação de conexão com fundo de acento e texto escuro.",
+      "native": {
+        "symbol": "TactileButtonStyle(prominent: true)",
+        "sources": [
+          "Sources/HomeControl/Theme.swift#TactileButtonStyle",
+          "Sources/HomeControl/SetupView.swift#body"
+        ],
+        "states": "extensions.interactionStates.tactileButton",
+        "disabledCondition": "store.isConnecting || address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty",
+        "connecting": "ProgressView pequeno e texto Conectando…",
+        "border": "extensions.borders.glass-control-edge"
+      }
+    },
+    {
+      "name": "Botão secundário",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ações Abrir, Parar e Fechar da cortina, quando suportadas.",
+      "native": {
+        "symbol": "TactileButtonStyle()",
+        "sources": [
+          "Sources/HomeControl/Theme.swift#TactileButtonStyle",
+          "Sources/HomeControl/DeviceViews.swift#CoverView"
+        ],
+        "states": "extensions.interactionStates.tactileButton",
+        "border": "extensions.borders.glass-control-edge"
+      }
+    },
+    {
+      "name": "Abas rotuladas",
+      "kind": "nav",
+      "refersTo": "tab-item",
+      "description": "Ar-condicionado, Cômodos e Favoritos dividem o cabeçalho; seleção usa texto principal e superfície raised.",
+      "native": {
+        "symbol": "PanelView.header",
+        "source": "Sources/HomeControl/PanelView.swift#header",
+        "selectedRefersTo": "tab-item-selected",
+        "accessibility": "help(category.title), accessibilityLabel(category.title), trait .isSelected conforme store.topCategory.",
+        "visibility": "Oculta durante SetupView.",
+        "buttonStyle": ".plain; sem hover ou foco customizado",
+        "labels": [
+          "Ar-condicionado",
+          "Cômodos",
+          "Favoritos"
+        ],
+        "iconSizePt": 13,
+        "label": {
+          "sizePt": 11,
+          "weight": "regular; semibold na selecionada"
+        },
+        "selectedSurface": {
+          "fill": "{colors.raised}",
+          "rounded": "{rounded.navigation}"
+        },
+        "detailNavigation": "Mantém contexto superior; retorno a Cômodos ou Favoritos. Picker segmentado pequeno para múltiplos aparelhos no acesso direto a Ar-condicionado."
+      }
+    },
+    {
+      "name": "Campo de conexão",
+      "kind": "input",
+      "refersTo": "setup-field",
+      "description": "TextField para endereço e SecureField para token, com placeholders sobrepostos.",
+      "native": {
+        "symbols": [
+          "TextField",
+          "SecureField",
+          "FocusState"
+        ],
+        "source": "Sources/HomeControl/SetupView.swift#body",
+        "style": ".textFieldStyle(.plain)",
+        "states": "extensions.interactionStates.setupFields",
+        "placeholderColor": "{colors.secondary}",
+        "placeholderBehavior": "Texto decorativo sem hit testing e oculto da acessibilidade.",
+        "border": "GlassSurface(radius: {rounded.input})",
+        "errors": "Faixa de aviso de PanelView; sem borda de erro própria."
+      }
+    },
+    {
+      "name": "Opção de aparelho",
+      "kind": "card",
+      "refersTo": "option-tile",
+      "description": "Tile de modo, velocidade, perfil ou direção; abre popover nativo de opções.",
+      "native": {
+        "symbol": "OptionTile",
+        "source": "Sources/HomeControl/Theme.swift#OptionTile",
+        "titleTypography": "{typography.badge}",
+        "iconColor": "{colors.accent}",
+        "titleColor": "{colors.secondary}",
+        "valueLayout": "Até duas linhas com espaço reservado.",
+        "popover": {
+          "widthPt": 180,
+          "heightExpression": "min(300, CGFloat(options.count) * 40 + 10)",
+          "selectedIndicator": "checkmark em {colors.accent}"
+        },
+        "border": "extensions.borders.glass-control-edge",
+        "states": "Botão .plain; sem hover ou foco customizado. Desabilitação herdada de DeviceDetail."
+      }
+    },
+    {
+      "name": "Energia",
+      "kind": "button",
+      "refersTo": "power-button",
+      "description": "Botão circular de energia no cabeçalho do aparelho, com progresso de comando.",
+      "native": {
+        "symbol": "PanelView.deviceHeader",
+        "source": "Sources/HomeControl/PanelView.swift#deviceHeader",
+        "shape": "Circle",
+        "off": {
+          "fill": "{colors.surface}",
+          "stroke": "{colors.line}",
+          "icon": "{colors.secondary}"
+        },
+        "on": {
+          "fill": {
+            "color": "{colors.accent}",
+            "opacity": 0.12
+          },
+          "stroke": {
+            "color": "{colors.accent}",
+            "opacity": 0.48
+          },
+          "icon": "{colors.accent}"
+        },
+        "strokeWidthPt": 1,
+        "pending": "ProgressView substitui o SF Symbol power.",
+        "disabledCondition": "!store.canControl || !entity.available || ServiceCall.power(entity) == nil || store.pendingEntities.contains(entity.id)",
+        "buttonStyle": ".plain; sem hover ou foco customizado"
+      }
+    },
+    {
+      "name": "Slider tátil",
+      "kind": "custom",
+      "refersTo": "slider",
+      "description": "Controle ajustável de temperatura, brilho, velocidade ou posição conforme a entidade.",
+      "native": {
+        "symbol": "ControlSlider",
+        "source": "Sources/HomeControl/Theme.swift#ControlSlider",
+        "states": "extensions.interactionStates.slider",
+        "fillGradient": [
+          {
+            "color": "{colors.accent}",
+            "opacity": 0.38
+          },
+          {
+            "color": "{colors.accent}",
+            "opacity": 0.85
+          }
+        ],
+        "thumb": {
+          "color": "{colors.text}",
+          "rounded": "{rounded.slider-thumb}",
+          "widthPt": 22,
+          "heightPt": 32,
+          "shadow": "extensions.shadows.slider-thumb"
+        },
+        "adjustButtons": {
+          "shape": "Circle",
+          "sizePt": 36,
+          "fill": "{colors.surface}",
+          "disabled": "Sem valor ou no limite correspondente; herda isEnabled."
+        },
+        "valueBehavior": "Draft local e onPreview durante arrasto; commit ao soltar e limpeza do preview; clamp nos limites e ajuste ao passo."
+      }
+    },
+    {
+      "name": "Clima e Eco",
+      "kind": "custom",
+      "refersTo": "climate-detail",
+      "description": "Ilustração central, temperatura, Eco condicional, slider e grade de quatro colunas preservam a referência.",
+      "native": {
+        "symbols": [
+          "ClimateView",
+          "AirConditionerView"
+        ],
+        "source": "Sources/HomeControl/DeviceViews.swift#ClimateView",
+        "rangeTypography": "{typography.temperature-range}",
+        "unitTypography": "{typography.temperature-unit}",
+        "airflow": "extensions.motion.airflow",
+        "asset": "extensions.native.assetProvenance.airConditioner",
+        "inactiveImageOpacity": 0.62,
+        "imageAccessibility": "Ilustração e fluxo decorativos, accessibilityHidden(true).",
+        "eco": {
+          "refersTo": "eco-control",
+          "implementation": "Button com Capsule e Circle, não Toggle.",
+          "condition": "entity.supports(16) e preset_modes contém eco e none",
+          "trackWidthPt": 35,
+          "trackHeightPt": 21,
+          "thumbInsetPt": 2,
+          "trackOff": "{colors.raised}",
+          "trackOn": "{colors.accent}",
+          "thumb": "{colors.text}",
+          "accessibility": "Modo Eco; valor Ativado ou Desativado."
+        },
+        "singleSetpointPreview": {
+          "value": "temperaturePreview ?? entity.number(\"temperature\")",
+          "idleInstruction": "Arraste ou use − / +",
+          "dragInstruction": "Solte para ajustar",
+          "commit": "Somente ao soltar o arrasto.",
+          "reset": "Término do arrasto, desaparecimento do slider ou troca de entity.id.",
+          "scope": "Alvo único; mínima/máxima mantêm seus controles próprios."
+        }
+      }
+    },
+    {
+      "name": "Selo de demonstração",
+      "kind": "chip",
+      "refersTo": "demo-badge",
+      "description": "Identificação textual dos dados de exemplo no cabeçalho.",
+      "native": {
+        "symbol": "PanelView.header",
+        "source": "Sources/HomeControl/PanelView.swift#header",
+        "shape": "Capsule",
+        "label": "Demonstração",
+        "visibility": "store.isDemo",
+        "interaction": "Text informativo, sem ação."
+      }
+    },
+    {
+      "name": "Cômodos e organização",
+      "kind": "custom",
+      "description": "Áreas recebidas do Home Assistant, controles e ambiente primeiro, grupos técnicos recolhidos e organização local reversível.",
+      "native": {
+        "symbols": [
+          "RoomsView",
+          "DeviceListView"
+        ],
+        "sources": [
+          "Sources/HomeControl/RoomsView.swift",
+          "Sources/HomeControl/DeviceListView.swift"
+        ],
+        "rooms": {
+          "identity": "store.registryAreas com escopo .area(area.id)",
+          "rows": "Ícone, nome, contagem de uso diário, contagem adicional quando existente e chevron.",
+          "scopes": [
+            "Toda a casa",
+            "Geral da casa quando houver itens",
+            "Sem cômodo quando houver itens"
+          ],
+          "metadataStates": [
+            "Carregamento",
+            "Registro indisponível",
+            "Ausência de áreas",
+            "Aviso de metadados",
+            "Última organização recebida",
+            "Demonstração"
+          ],
+          "syncStatus": "Texto conforme registryRealtime e estado da conexão: sincronização automática ou atualização a cada minuto; não comprova o servidor.",
+          "refresh": "Atualizar cômodos com progresso e ação manual."
+        },
+        "groups": {
+          "first": "Uso diário e ambiente.",
+          "collapsedByDefault": [
+            "Consumo",
+            "Rotinas",
+            "Manutenção",
+            "Configuração",
+            "Diagnóstico",
+            "Outras leituras"
+          ],
+          "exceptions": "Busca ativa e Favoritos mostram os grupos diretamente.",
+          "consumption": "Métricas separadas; identificação do dispositivo quando houver período, unidade e período recebido, sem total sintético."
+        },
+        "search": {
+          "visibility": "base.count > 6",
+          "matches": "Nome do item ou do cômodo, incluindo grupos técnicos; exclui ocultos."
+        },
+        "organization": {
+          "entry": "Organizar",
+          "exit": "Concluir",
+          "instruction": "Use o menu de cada item para mudar seu grupo ou ocultá-lo neste Mac.",
+          "actions": [
+            "Classificar como",
+            "Usar classificação automática",
+            "Ocultar no app",
+            "Mostrar no app"
+          ],
+          "scope": "Local neste Mac, por servidor conforme o contrato aprovado; reversível, sem editar áreas ou entidades HA.",
+          "hiddenItems": "DisclosureGroup Itens ocultos durante Organizar.",
+          "contextMenu": "Também oferece as ações de organização.",
+          "haHiddenOrDisabled": "Indicação textual; sem alternância local de ocultação."
+        },
+        "rows": "Luzes e interruptores com switch; cenas com Ativar; sensores com leitura e unidade; detalhes conforme capacidades; estrelas para Favoritos.",
+        "reset": "Mudança de scope ou categoria limpa busca, expansões e organizing."
+      }
+    }
+  ],
+  "narrative": {
+    "northStar": "Controle doméstico em vidro fumê",
+    "overview": "Registro do design implementado em SwiftUI e AppKit para a barra de menus do macOS. Três abas rotuladas, Ar-condicionado, Cômodos e Favoritos, organizam o painel. O detalhe do ar-condicionado preserva a composição da referência: identificação à esquerda, energia circular à direita, ilustração central, temperatura proeminente, Eco, slider e opções compactas. O vidro fumê usa material nativo, superfícies translúcidas e bordas claras finas.\n\nA interface em português combina texto marfim, acento oliva-taupe e controles arredondados. O escopo mantém os dispositivos compatíveis do Home Assistant; capacidades da entidade determinam quais controles aparecem. O ar-condicionado é uma imagem gerada, não uma fotografia do aparelho conectado. Os dados de exemplo são identificados por “Demonstração”.",
+    "keyCharacteristics": [
+      "Painel nativo compacto, com três abas rotuladas e ícone fixo na barra de menus.",
+      "Cômodos do Home Assistant, uso diário primeiro e organização local reversível.",
+      "Vidro fumê real, texto quente e superfícies brancas translúcidas.",
+      "Tipografia do sistema, SF Symbols e controles conforme as capacidades.",
+      "Demonstração identificada e preferências de acessibilidade respeitadas."
+    ],
+    "rules": [],
+    "dos": [
+      "**Do** preservar o painel de 440 × 632 pontos, as três abas rotuladas e a composição aprovada do detalhe de clima.",
+      "**Do** usar o material nativo e seus preenchimentos translúcidos, mantendo o fallback opaco de Reduzir Transparência.",
+      "**Do** conservar a tipografia do macOS, SF Symbols e os estados implementados de foco, pressão e desabilitação.",
+      "**Do** identificar a demonstração e apresentar somente controles suportados pela entidade.",
+      "**Do** manter o fluxo de ar estático com Reduzir Movimento, pausar quando invisível e ocultar quando o aparelho não estiver ligado e disponível.",
+      "**Do** apresentar uso diário primeiro e manter os grupos técnicos recolhidos nos cômodos, respeitando as exceções de busca e Favoritos.",
+      "**Do** usar Organizar para classificação e ocultação locais reversíveis, preservando áreas e estados recebidos do Home Assistant."
+    ],
+    "donts": [
+      "**Don't** substituir a composição aprovada por outra direção visual, restaurar a navegação anterior por categorias ou inventar variantes móveis.",
+      "**Don't** descrever o blur como CSS ou atribuir valores próprios às sombras de janela controladas pelo macOS.",
+      "**Don't** apresentar a imagem gerada como fotografia de um aparelho físico ou dados de demonstração como leituras reais.",
+      "**Don't** afirmar que há hover, foco de campo, rampas tonais ou animações globais customizadas sem implementação nas fontes.",
+      "**Don't** acrescentar controles de fechaduras, alarmes ou portas de garagem ao escopo inicial."
+    ]
+  }
+}

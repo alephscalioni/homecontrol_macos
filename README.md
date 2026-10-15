@@ -2,9 +2,11 @@
 
 App nativo da barra de menus do Mac para controlar uma casa integrada ao Home Assistant. Interface em português, com a composição da referência e glassmorfismo: desfoque nativo do macOS, vidro escuro translúcido e bordas suaves. A opção Reduzir Transparência do sistema é respeitada.
 
-## Abrir
+## Instalar
 
-Abra `build/HomeControl.app` ou dê dois cliques em `Abrir HomeControl.command`.
+Baixe o ZIP da [última versão](https://github.com/alephscalioni/homecontrol_macos/releases/latest), extraia `HomeControl.app` e mova para a pasta Aplicativos. O pacote inicial atende Macs com Apple Silicon e macOS 14 ou superior.
+
+Para compilar do código-fonte, dê dois cliques em `Abrir HomeControl.command` ou execute `./scripts/build-app.sh` e abra `build/HomeControl.app`.
 
 O ícone de uma casa aparece na barra de menus. Na primeira abertura, configure sua conexão ou selecione **Explorar demonstração**. A demonstração usa dados de exemplo e não envia comandos à sua casa.
 
@@ -36,7 +38,7 @@ Luzes RGB têm controle de energia e brilho; escolha de cor RGB, câmeras, multi
 
 ## Desenvolvimento
 
-Requer macOS 14+ e Xcode/Swift 6 ou superior. O pacote não tem dependências externas.
+Requer macOS 14+ e Xcode/Swift 6 ou superior. O pacote usa Sparkle para as atualizações do aplicativo; o Swift Package Manager resolve a versão fixada em Package.resolved.
 
 ```sh
 swift build
@@ -45,7 +47,7 @@ swift run HomeControl --demo --window
 open build/HomeControl.app
 ```
 
-`--demo` usa exclusivamente os exemplos locais; `--window` abre uma janela para inspeção. Sem essas opções, o app funciona pela barra de menus. O script empacota os recursos e faz assinatura ad hoc local. O build entregue é para a arquitetura deste Mac e não está notarizado para distribuição pública.
+`--demo` usa exclusivamente os exemplos locais; `--window` abre uma janela para inspeção. Sem essas opções, o app funciona pela barra de menus. O script empacota os recursos. Sem identidade de assinatura configurada, usa assinatura ad hoc local; a assinatura Developer ID e a notarização dependem da configuração de distribuição. Consulte as notas da release para os requisitos e o estado do pacote publicado.
 
 ## Verificação
 
@@ -73,6 +75,14 @@ O inventário é somente leitura. A aplicação de um plano exige administrador,
 
 O repositório não inclui conexão, inventário, capturas ou backups de uma casa real. Os exemplos são sintéticos; os testes de protocolo e acionamento usam o servidor simulado e a demonstração.
 
+## Atualizações do aplicativo
+
+As versões distribuídas usam o feed assinado do GitHub Releases. O usuário pode autorizar a busca e instalação automáticas; o menu também oferece **Verificar atualizações…**. A chave privada de publicação permanece no Chaves do mantenedor. Para publicar uma versão ou configurar um fork, consulte [UPDATES.md](UPDATES.md).
+
+## Privacidade do repositório
+
+O código não inclui os dados de uma instalação real. Credenciais e preferências ficam fora do projeto, no armazenamento local do macOS. Inventários, capturas, builds e configurações locais devem permanecer fora das publicações; consulte [SECURITY.md](SECURITY.md).
+
 ## Referências
 
 - [WebSocket API do Home Assistant](https://developers.home-assistant.io/docs/api/websocket/)
@@ -80,4 +90,3 @@ O repositório não inclui conexão, inventário, capturas ou backups de uma cas
 - [Tokens e autenticação](https://developers.home-assistant.io/docs/auth_api/)
 
 A imagem do ar-condicionado foi criada com a ferramenta integrada de geração de imagens. O prompt e a origem estão em `assets/air-conditioner.prompt.txt` e nos metadados do PNG. O ícone usa SF Symbols e pode ser recriado com `scripts/make-icon.swift`.
-# homecontrol_macos

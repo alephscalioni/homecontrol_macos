@@ -1,0 +1,4 @@
+{
+  "feedURL": "https://updates.example.org/homecontrol/appcast.xml",
+  "publicEDKey": "SUBSTITUA_PELA_CHAVE_PUBLICA_GERADA_PELO_SPARKLE"
+}
