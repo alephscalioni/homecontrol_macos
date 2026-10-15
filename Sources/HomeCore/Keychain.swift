@@ -35,6 +35,6 @@ public enum TokenVault {
     private struct VaultError: LocalizedError {
         let status: OSStatus
         init(_ status: OSStatus) { self.status = status }
-        var errorDescription: String? { "Não foi possível acessar o token no Chaves do macOS (\(status)). Verifique o acesso e tente novamente." }
+        var errorDescription: String? { L10n.format("Não foi possível acessar o token no Chaves do macOS (%@). Verifique o acesso e tente novamente.", String(status)) }
     }
 }

@@ -13,6 +13,8 @@ swift run HomeControl --demo --window
 open build/HomeControl.app
 ```
 
+`--demo --reduce-motion` permite verificar o fluxo estático sem alterar as preferências do sistema. Para conferir idiomas, execute o app com `-AppleLanguages '(en-US)' -AppleLocale en_US` ou `-AppleLanguages '(pt-BR)' -AppleLocale pt_BR`. Essas opções afetam só o processo iniciado.
+
 `--demo` usa exclusivamente os exemplos locais; `--window` abre uma janela para inspeção. Sem essas opções, o app funciona pela barra de menus. O script empacota os recursos. Sem identidade de assinatura configurada, usa assinatura ad hoc local; a assinatura Developer ID e a notarização dependem da configuração de distribuição. Consulte as notas da release para os requisitos e o estado do pacote publicado.
 
 ## Verificação

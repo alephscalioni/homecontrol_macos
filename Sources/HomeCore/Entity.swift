@@ -154,12 +154,12 @@ public enum HAError: LocalizedError, Equatable {
     case invalidAddress, invalidToken, disconnected, timeout, server(String), malformed
     public var errorDescription: String? {
         switch self {
-        case .invalidAddress: return "Use o endereço completo, como http://homeassistant.local:8123, sem usuário, senha ou parâmetros na URL."
-        case .invalidToken: return "O Home Assistant recusou o token. Gere outro em Perfil → Segurança → Tokens de acesso de longa duração."
-        case .disconnected: return "Sem conexão com o Home Assistant. Verifique a rede e tente novamente."
-        case .timeout: return "O Home Assistant não respondeu a tempo. Confira o estado do aparelho antes de repetir o comando."
+        case .invalidAddress: return L10n.text("Use o endereço completo, como http://homeassistant.local:8123, sem usuário, senha ou parâmetros na URL.")
+        case .invalidToken: return L10n.text("O Home Assistant recusou o token. Gere outro em Perfil → Segurança → Tokens de acesso de longa duração.")
+        case .disconnected: return L10n.text("Sem conexão com o Home Assistant. Verifique a rede e tente novamente.")
+        case .timeout: return L10n.text("O Home Assistant não respondeu a tempo. Confira o estado do aparelho antes de repetir o comando.")
         case .server(let message): return message
-        case .malformed: return "A resposta do Home Assistant não pôde ser lida. Tente reconectar."
+        case .malformed: return L10n.text("A resposta do Home Assistant não pôde ser lida. Tente reconectar.")
         }
     }
 }

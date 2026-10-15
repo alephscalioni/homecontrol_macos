@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "HomeControl",
+    defaultLocalization: "en",
     platforms: [.macOS(.v14)],
     products: [
         .executable(name: "HomeControl", targets: ["HomeControl"]),
@@ -10,7 +11,7 @@ let package = Package(
     ],
     dependencies: [.package(url: "https://github.com/sparkle-project/Sparkle", exact: "2.10.0")],
     targets: [
-        .target(name: "HomeCore"),
+        .target(name: "HomeCore", resources: [.process("Resources")]),
         .executableTarget(name: "HomeControl", dependencies: ["HomeCore", .product(name: "Sparkle", package: "Sparkle")], resources: [.copy("Resources")],
                           linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])]),
         .executableTarget(name: "HomeControlCLI", dependencies: ["HomeCore"]),

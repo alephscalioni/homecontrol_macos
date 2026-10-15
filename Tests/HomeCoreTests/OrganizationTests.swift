@@ -15,7 +15,8 @@ final class OrganizationTests: XCTestCase {
         XCTAssertEqual(EntityOrganizer.purpose(for: power), .consumption)
         XCTAssertEqual(ConsumptionMetric.classify(energy), .energy)
         XCTAssertEqual(ConsumptionMetric.classify(power), .power)
-        XCTAssertEqual(ConsumptionMetric.period(energy), "Este mês")
+        XCTAssertEqual(ConsumptionMetric.period(energy, locale: Locale(identifier: "pt_BR")), "Este mês")
+        XCTAssertEqual(ConsumptionMetric.period(energy, locale: Locale(identifier: "en_US")), "This month")
         XCTAssertNil(ConsumptionMetric.period(power))
     }
     func testElectricalTelemetryIsNotAnEnvironmentReading() {
@@ -91,7 +92,7 @@ final class OrganizationTests: XCTestCase {
     }
     func testPeriodsAreNotInventedForAnUnknownCounter() {
         XCTAssertNil(ConsumptionMetric.period(sensor("sensor.energy", "energy", unit: "kWh")))
-        XCTAssertEqual(ConsumptionMetric.period(sensor("sensor.air_energy_last_month")), "Mês passado")
-        XCTAssertEqual(ConsumptionMetric.period(sensor("sensor.air_energy_yesterday")), "Ontem")
+        XCTAssertEqual(ConsumptionMetric.period(sensor("sensor.air_energy_last_month"), locale: Locale(identifier: "pt_BR")), "Mês passado")
+        XCTAssertEqual(ConsumptionMetric.period(sensor("sensor.air_energy_yesterday"), locale: Locale(identifier: "en_US")), "Yesterday")
     }
 }

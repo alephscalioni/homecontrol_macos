@@ -7,15 +7,15 @@ enum DeviceCategory: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .rooms: return "Cômodos"
-        case .climate: return "Ar-condicionado"
-        case .lights: return "Luzes"
-        case .switches: return "Interruptores"
-        case .covers: return "Cortinas"
-        case .fans: return "Ventilação"
-        case .scenes: return "Cenas"
-        case .sensors: return "Sensores"
-        case .favorites: return "Favoritos"
+        case .rooms: return L10n.text("Cômodos")
+        case .climate: return L10n.text("Ar-condicionado")
+        case .lights: return L10n.text("Luzes")
+        case .switches: return L10n.text("Interruptores")
+        case .covers: return L10n.text("Cortinas")
+        case .fans: return L10n.text("Ventilação")
+        case .scenes: return L10n.text("Cenas")
+        case .sensors: return L10n.text("Sensores")
+        case .favorites: return L10n.text("Favoritos")
         }
     }
     var icon: String {
@@ -55,6 +55,7 @@ final class HomeStore: ObservableObject {
     @Published var category: DeviceCategory = .rooms
     @Published var selection: [DeviceCategory: String] = [:]
     @Published var showSettings = true
+    @Published var isPanelVisible = false
     @Published var errorMessage: String?
     @Published var feedback: String?
     @Published var pendingEntities: Set<String> = []
@@ -99,11 +100,11 @@ final class HomeStore: ObservableObject {
     var categoryItems: [HAEntity] { entities.filter { $0.isSupported && category.contains($0) && (category != .favorites || favoriteIDs.contains($0.id)) } }
     var statusLabel: String {
         switch phase {
-        case .demo: return "Demonstração · dados de exemplo"
-        case .connected: return "Home Assistant conectado"
-        case .connecting: return "Conectando ao Home Assistant…"
-        case .reconnecting: return "Reconectando · dados desatualizados"
-        case .disconnected: return "Home Assistant desconectado"
+        case .demo: return L10n.text("Demonstração · dados de exemplo")
+        case .connected: return L10n.text("Home Assistant conectado")
+        case .connecting: return L10n.text("Conectando ao Home Assistant…")
+        case .reconnecting: return L10n.text("Reconectando · dados desatualizados")
+        case .disconnected: return L10n.text("Home Assistant desconectado")
         }
     }
 
@@ -137,7 +138,7 @@ final class HomeStore: ObservableObject {
                 let token = try await Task.detached { try TokenVault.read(for: address) }.value
                 guard !Task.isCancelled else { return }
                 if let token { self.connect(address: address, token: token) }
-                else { phase = .disconnected; showSettings = true; errorMessage = "Não foi encontrado um token salvo para este Home Assistant. Conecte novamente para salvar o acesso." }
+                else { phase = .disconnected; showSettings = true; errorMessage = L10n.text("Não foi encontrado um token salvo para este Home Assistant. Conecte novamente para salvar o acesso.") }
             } catch {
                 guard !Task.isCancelled else { return }
                 phase = .disconnected; showSettings = true; errorMessage = error.localizedDescription
@@ -155,7 +156,7 @@ final class HomeStore: ObservableObject {
                 let saved = try await Task.detached { try TokenVault.read(for: normalized) }.value
                 guard current == connectionGeneration else { return }
                 if let saved { connect(address: normalized, token: saved) }
-                else { errorMessage = "Não há token salvo para este endereço. Cole um token para conectar." }
+                else { errorMessage = L10n.text("Não há token salvo para este endereço. Cole um token para conectar.") }
             } catch { errorMessage = error.localizedDescription }
         }
     }
@@ -165,12 +166,13 @@ final class HomeStore: ObservableObject {
         let token = input.trimmingCharacters(in: .whitespacesAndNewlines)
         do { url = try ServerAddress.normalize(address) }
         catch { errorMessage = error.localizedDescription; return }
-        guard !token.isEmpty else { errorMessage = "Cole o token de acesso do seu Home Assistant."; return }
+        guard !token.isEmpty else { errorMessage = L10n.text("Cole o token de acesso do seu Home Assistant."); return }
         connectionTask?.cancel(); reconnectTask?.cancel()
         connectionGeneration = UUID()
         let current = connectionGeneration
         client.disconnect()
         if !retry {
+            favoriteIDs = Set(UserDefaults.standard.stringArray(forKey: "favorites") ?? [])
             entities = []; areas = [:]; registryAreas = []; entityAreaIDs = [:]; registryEntries = [:]; registryDevices = [:]
             registryLoaded = false; roomScope = nil; detailFromRoom = false; retryCount = 0
             restoreOrganization(for: url.absoluteString)
@@ -225,7 +227,7 @@ final class HomeStore: ObservableObject {
             if case .area(let id) = roomScope, !registryAreas.contains(where: { $0.id == id }) { roomScope = nil }
         } catch {
             guard !Task.isCancelled, current == connectionGeneration, metadataLoadID == loadID else { return }
-            metadataNotice = registryLoaded ? "Não foi possível atualizar os cômodos. Exibindo a última organização recebida." : "Os cômodos não puderam ser carregados. Ar-condicionado e Favoritos continuam disponíveis nas abas acima."
+            metadataNotice = registryLoaded ? L10n.text("Não foi possível atualizar os cômodos. Exibindo a última organização recebida.") : L10n.text("Os cômodos não puderam ser carregados. Ar-condicionado e Favoritos continuam disponíveis nas abas acima.")
         }
     }
 
@@ -267,10 +269,10 @@ final class HomeStore: ObservableObject {
     }
     func roomName(for scope: RoomScope) -> String {
         switch scope {
-        case .all: return "Toda a casa"
-        case .general: return "Geral da casa"
-        case .unassigned: return "Sem cômodo"
-        case .area(let id): return registryAreas.first { $0.id == id }?.name ?? "Cômodo"
+        case .all: return L10n.text("Toda a casa")
+        case .general: return L10n.text("Geral da casa")
+        case .unassigned: return L10n.text("Sem cômodo")
+        case .area(let id): return registryAreas.first { $0.id == id }?.name ?? L10n.text("Cômodo")
         }
     }
     var topCategory: DeviceCategory { detailFromFavorites || category == .favorites ? .favorites : (category == .climate && !detailFromRoom ? .climate : .rooms) }
@@ -322,6 +324,8 @@ final class HomeStore: ObservableObject {
 
     func useDemo() {
         stopConnection()
+        serverAddress = ""
+        favoriteIDs = Set(UserDefaults.standard.stringArray(forKey: "favorites.demo") ?? [])
         entities = DemoHome.entities
         areas = DemoHome.areas
         let registry = DemoHome.registry
@@ -354,7 +358,7 @@ final class HomeStore: ObservableObject {
     }
     func toggleFavorite(_ entity: HAEntity) {
         if favoriteIDs.contains(entity.id) { favoriteIDs.remove(entity.id) } else { favoriteIDs.insert(entity.id) }
-        UserDefaults.standard.set(Array(favoriteIDs), forKey: "favorites")
+        UserDefaults.standard.set(Array(favoriteIDs), forKey: isDemo ? "favorites.demo" : "favorites")
     }
     func execute(_ command: ServiceCall?) {
         guard let command, canControl,
@@ -377,7 +381,7 @@ final class HomeStore: ObservableObject {
                 }
                 guard current == connectionGeneration else { return }
                 pendingEntities.remove(command.entityID)
-                flash(demo ? "Alterado na demonstração" : "Comando aceito pelo Home Assistant")
+                flash(demo ? L10n.text("Alterado na demonstração") : L10n.text("Comando aceito pelo Home Assistant"))
             } catch {
                 guard current == connectionGeneration else { return }
                 pendingEntities.remove(command.entityID)
@@ -396,9 +400,9 @@ final class HomeStore: ObservableObject {
         if let error = error as? URLError {
             switch error.code {
             case .cannotFindHost, .cannotConnectToHost, .networkConnectionLost, .notConnectedToInternet:
-                return "Não foi possível alcançar o Home Assistant. Confira o endereço e a conexão com a rede da sua casa."
+                return L10n.text("Não foi possível alcançar o Home Assistant. Confira o endereço e a conexão com a rede da sua casa.")
             case .serverCertificateUntrusted, .serverCertificateHasBadDate, .secureConnectionFailed:
-                return "A conexão segura foi recusada. Confira o certificado e o endereço do Home Assistant."
+                return L10n.text("A conexão segura foi recusada. Confira o certificado e o endereço do Home Assistant.")
             default: break
             }
         }

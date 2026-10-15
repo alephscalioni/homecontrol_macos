@@ -4,7 +4,7 @@ import HomeCore
 enum DemoHome {
     static let entities: [HAEntity] = [
         HAEntity("climate.quarto", state: "cool", attributes: [
-            "friendly_name": .string("Ar-condicionado do quarto"), "temperature": .number(21),
+            "friendly_name": .string(L10n.text("Ar-condicionado do quarto")), "temperature": .number(21),
             "current_temperature": .number(23), "temperature_unit": .string("°C"),
             "min_temp": .number(16), "max_temp": .number(32), "target_temp_step": .number(1),
             "hvac_modes": .strings(["off", "cool", "heat", "dry", "fan_only", "auto"]),
@@ -14,35 +14,35 @@ enum DemoHome {
             "hvac_action": .string("cooling"), "supported_features": .number(441)
         ]),
         HAEntity("climate.sala", state: "off", attributes: [
-            "friendly_name": .string("Ar-condicionado da sala"), "temperature": .number(24),
+            "friendly_name": .string(L10n.text("Ar-condicionado da sala")), "temperature": .number(24),
             "current_temperature": .number(25.5), "temperature_unit": .string("°C"),
             "min_temp": .number(16), "max_temp": .number(30), "target_temp_step": .number(0.5),
             "hvac_modes": .strings(["off", "cool", "heat", "auto"]), "supported_features": .number(385)
         ]),
         HAEntity("climate.termostato", state: "heat_cool", attributes: [
-            "friendly_name": .string("Termostato da suíte"), "target_temp_low": .number(20), "target_temp_high": .number(24),
+            "friendly_name": .string(L10n.text("Termostato da suíte")), "target_temp_low": .number(20), "target_temp_high": .number(24),
             "current_temperature": .number(22.5), "temperature_unit": .string("°C"),
             "min_temp": .number(16), "max_temp": .number(32), "target_temp_step": .number(0.5),
             "hvac_modes": .strings(["off", "heat_cool", "heat", "cool", "auto"]), "supported_features": .number(387)
         ]),
-        HAEntity("light.sala", state: "on", attributes: ["friendly_name": .string("Luz da sala"), "brightness": .number(178), "supported_color_modes": .strings(["color_temp"]), "color_temp_kelvin": .number(3000), "min_color_temp_kelvin": .number(2200), "max_color_temp_kelvin": .number(6500)]),
-        HAEntity("light.abajur", state: "on", attributes: ["friendly_name": .string("Abajur"), "brightness": .number(92), "supported_color_modes": .strings(["brightness"])]),
-        HAEntity("light.cozinha", state: "off", attributes: ["friendly_name": .string("Luz da cozinha"), "supported_color_modes": .strings(["onoff"])]),
-        HAEntity("switch.cafeteira", state: "off", attributes: ["friendly_name": .string("Cafeteira")]),
-        HAEntity("switch.escritorio", state: "on", attributes: ["friendly_name": .string("Tomada da bancada")]),
-        HAEntity("cover.sala", state: "open", attributes: ["friendly_name": .string("Cortina da sala"), "device_class": .string("curtain"), "current_position": .number(65), "supported_features": .number(15)]),
-        HAEntity("fan.escritorio", state: "on", attributes: ["friendly_name": .string("Ventilador do escritório"), "percentage": .number(50), "percentage_step": .number(25), "oscillating": .bool(true), "preset_modes": .strings(["normal", "sleep"]), "preset_mode": .string("normal"), "supported_features": .number(59)]),
-        HAEntity("scene.cinema", state: "2026-10-15T00:00:00Z", attributes: ["friendly_name": .string("Hora do cinema"), "icon": .string("mdi:movie-open")]),
-        HAEntity("scene.boa_noite", state: "2026-10-15T00:00:00Z", attributes: ["friendly_name": .string("Boa noite")]),
-        HAEntity("scene.cheguei", state: "2026-10-15T00:00:00Z", attributes: ["friendly_name": .string("Cheguei em casa")]),
-        HAEntity("sensor.temperatura", state: "23.1", attributes: ["friendly_name": .string("Temperatura do quarto"), "unit_of_measurement": .string("°C"), "device_class": .string("temperature")]),
-        HAEntity("sensor.umidade", state: "54", attributes: ["friendly_name": .string("Umidade do quarto"), "unit_of_measurement": .string("%"), "device_class": .string("humidity")]),
-        HAEntity("binary_sensor.janela", state: "off", attributes: ["friendly_name": .string("Janela da sala"), "device_class": .string("window")])
+        HAEntity("light.sala", state: "on", attributes: ["friendly_name": .string(L10n.text("Luz da sala")), "brightness": .number(178), "supported_color_modes": .strings(["color_temp"]), "color_temp_kelvin": .number(3000), "min_color_temp_kelvin": .number(2200), "max_color_temp_kelvin": .number(6500)]),
+        HAEntity("light.abajur", state: "on", attributes: ["friendly_name": .string(L10n.text("Abajur")), "brightness": .number(92), "supported_color_modes": .strings(["brightness"])]),
+        HAEntity("light.cozinha", state: "off", attributes: ["friendly_name": .string(L10n.text("Luz da cozinha")), "supported_color_modes": .strings(["onoff"])]),
+        HAEntity("switch.cafeteira", state: "off", attributes: ["friendly_name": .string(L10n.text("Cafeteira"))]),
+        HAEntity("switch.escritorio", state: "on", attributes: ["friendly_name": .string(L10n.text("Tomada da bancada"))]),
+        HAEntity("cover.sala", state: "open", attributes: ["friendly_name": .string(L10n.text("Cortina da sala")), "device_class": .string("curtain"), "current_position": .number(65), "supported_features": .number(15)]),
+        HAEntity("fan.escritorio", state: "on", attributes: ["friendly_name": .string(L10n.text("Ventilador do escritório")), "percentage": .number(50), "percentage_step": .number(25), "oscillating": .bool(true), "preset_modes": .strings(["normal", "sleep"]), "preset_mode": .string("normal"), "supported_features": .number(59)]),
+        HAEntity("scene.cinema", state: "2026-10-15T00:00:00Z", attributes: ["friendly_name": .string(L10n.text("Hora do cinema")), "icon": .string("mdi:movie-open")]),
+        HAEntity("scene.boa_noite", state: "2026-10-15T00:00:00Z", attributes: ["friendly_name": .string(L10n.text("Boa noite"))]),
+        HAEntity("scene.cheguei", state: "2026-10-15T00:00:00Z", attributes: ["friendly_name": .string(L10n.text("Cheguei em casa"))]),
+        HAEntity("sensor.temperatura", state: "23.1", attributes: ["friendly_name": .string(L10n.text("Temperatura do quarto")), "unit_of_measurement": .string("°C"), "device_class": .string("temperature")]),
+        HAEntity("sensor.umidade", state: "54", attributes: ["friendly_name": .string(L10n.text("Umidade do quarto")), "unit_of_measurement": .string("%"), "device_class": .string("humidity")]),
+        HAEntity("binary_sensor.janela", state: "off", attributes: ["friendly_name": .string(L10n.text("Janela da sala")), "device_class": .string("window")])
     ]
     static let areas = [
-        "climate.quarto": "Quarto", "climate.sala": "Sala", "light.sala": "Sala", "light.abajur": "Quarto",
-        "light.cozinha": "Cozinha", "switch.cafeteira": "Cozinha", "switch.escritorio": "Escritório",
-        "cover.sala": "Sala", "fan.escritorio": "Escritório", "sensor.temperatura": "Quarto", "sensor.umidade": "Quarto", "binary_sensor.janela": "Sala", "climate.termostato": "Suíte"
+        "climate.quarto": L10n.text("Quarto"), "climate.sala": L10n.text("Sala"), "light.sala": L10n.text("Sala"), "light.abajur": L10n.text("Quarto"),
+        "light.cozinha": L10n.text("Cozinha"), "switch.cafeteira": L10n.text("Cozinha"), "switch.escritorio": L10n.text("Escritório"),
+        "cover.sala": L10n.text("Sala"), "fan.escritorio": L10n.text("Escritório"), "sensor.temperatura": L10n.text("Quarto"), "sensor.umidade": L10n.text("Quarto"), "binary_sensor.janela": L10n.text("Sala"), "climate.termostato": L10n.text("Suíte")
     ]
     static var registry: HARegistry {
         let names = Set(areas.values).sorted()

@@ -126,7 +126,7 @@ public struct AreaAssignment: Codable, Equatable, Sendable {
          kind == .device ? "device_id" : "entity_id": .string(id), "area_id": areaID.map(JSONValue.string) ?? .null]
     }
     public var reversed: AreaAssignment {
-        AreaAssignment(kind: kind, id: id, name: name, previousAreaID: areaID, areaID: previousAreaID, reason: "Reverter: \(reason)")
+        AreaAssignment(kind: kind, id: id, name: name, previousAreaID: areaID, areaID: previousAreaID, reason: L10n.format("Reverter: %@", reason))
     }
 }
 
@@ -138,22 +138,22 @@ public struct AreaAssignmentPlan: Codable, Sendable {
         var seen = Set<String>()
         for change in changes {
             guard seen.insert("\(change.kind.rawValue):\(change.id)").inserted else {
-                throw HAError.server("O plano repete o item \(change.name).")
+                throw HAError.server(L10n.format("O plano repete o item %@.", change.name))
             }
             if let areaID = change.areaID, !registry.areas.contains(where: { $0.id == areaID }) {
-                throw HAError.server("O cômodo de destino de \(change.name) não existe mais.")
+                throw HAError.server(L10n.format("O cômodo de destino de %@ não existe mais.", change.name))
             }
             let current: String?
             switch change.kind {
             case .device:
-                guard let device = registry.devices.first(where: { $0.id == change.id }) else { throw HAError.server("Dispositivo removido: \(change.name).") }
+                guard let device = registry.devices.first(where: { $0.id == change.id }) else { throw HAError.server(L10n.format("Dispositivo removido: %@.", change.name)) }
                 current = device.areaID
             case .entity:
-                guard let entity = registry.entities.first(where: { $0.id == change.id }) else { throw HAError.server("Entidade removida: \(change.name).") }
+                guard let entity = registry.entities.first(where: { $0.id == change.id }) else { throw HAError.server(L10n.format("Entidade removida: %@.", change.name)) }
                 current = entity.areaID
             }
             guard current == change.previousAreaID else {
-                throw HAError.server("O cômodo de \(change.name) mudou depois do inventário. Atualize o plano antes de aplicar.")
+                throw HAError.server(L10n.format("O cômodo de %@ mudou depois do inventário. Atualize o plano antes de aplicar.", change.name))
             }
         }
     }

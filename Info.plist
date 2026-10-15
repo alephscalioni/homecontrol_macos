@@ -6,12 +6,14 @@
     <key>CFBundleIdentifier</key><string>br.com.homecontrol.mac</string>
     <key>CFBundleExecutable</key><string>HomeControl</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleVersion</key><string>5</string>
-    <key>CFBundleShortVersionString</key><string>0.3.2</string>
+    <key>CFBundleVersion</key><string>6</string>
+    <key>CFBundleShortVersionString</key><string>0.3.3</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key><array><string>en</string><string>pt-BR</string></array>
     <key>CFBundleIconFile</key><string>HomeControl</string>
     <key>LSMinimumSystemVersion</key><string>14.0.0</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
-    <key>NSLocalNetworkUsageDescription</key><string>O HomeControl se conecta ao Home Assistant da sua casa para exibir e controlar seus aparelhos.</string>
+    <key>NSLocalNetworkUsageDescription</key><string>HomeControl connects to your Home Assistant to display and control your devices.</string>
     <key>NSAppTransportSecurity</key><dict><key>NSAllowsArbitraryLoads</key><true/></dict>
 </dict></plist>

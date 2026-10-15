@@ -164,7 +164,7 @@ components:
 
 Registro do design implementado em SwiftUI e AppKit para a barra de menus do macOS. Três abas rotuladas, Ar-condicionado, Cômodos e Favoritos, organizam o painel. O detalhe do ar-condicionado preserva a composição da referência: identificação à esquerda, energia circular à direita, ilustração central, temperatura proeminente, Eco, slider e opções compactas. O vidro fumê usa material nativo, superfícies translúcidas e bordas claras finas.
 
-A interface em português combina texto marfim, acento oliva-taupe e controles arredondados. O escopo mantém os dispositivos compatíveis do Home Assistant; capacidades da entidade determinam quais controles aparecem. O ar-condicionado é uma imagem gerada, não uma fotografia do aparelho conectado. Os dados de exemplo são identificados por “Demonstração”.
+A interface segue o idioma do macOS, com en-US e pt-BR, e combina texto marfim, acento oliva-taupe e controles arredondados. O escopo mantém os dispositivos compatíveis do Home Assistant; capacidades da entidade determinam quais controles aparecem. O ar-condicionado é uma imagem gerada, não uma fotografia do aparelho conectado. Os dados de exemplo são identificados por “Demonstração”.
 
 **Key Characteristics:**
 
@@ -284,7 +284,7 @@ O botão de conexão é desabilitado durante a conexão ou com endereço vazio a
 
 `AirConditionerView` usa o raster gerado `air-conditioner.png` e, se ele faltar, o SF Symbol `air.conditioner.horizontal.fill`. A imagem fica com opacidade 0,62 quando não está funcionando; esse caso inclui indisponibilidade. A ilustração e o fluxo são decorativos e ocultos da acessibilidade.
 
-O fluxo aparece apenas com entidade ligada e disponível. O `Canvas` desenha 28 trajetórias, cada uma com uma trilha tênue contínua e três filetes curtos descendentes. As trilhas usam gradiente de `text` com opacidades 0,14 e 0,05 até transparente e largura de 1,2 ponto; os filetes usam pontas arredondadas e largura de 2,1. O blur é de 1,5 ponto. `TimelineView` usa intervalo mínimo de 1/30 segundo (30 fps), com pausa quando `reduceMotion || !visible`; `onAppear` e `onDisappear` atualizam a visibilidade. Com **Reduzir Movimento**, o tempo fica em zero e o fluxo permanece estático. As fontes não definem curva de easing ou duração global para os outros controles.
+O fluxo aparece apenas com entidade ligada e disponível. Quinze trajetórias suaves partem da saída do ar e recebem faixas longas com pontas afiladas, gradiente de transparência e blur de 1,5 ponto. A velocidade reportada do ventilador determina intensidade, alcance e ritmo; a fase é integrada e a intensidade converge suavemente para evitar saltos ao trocar a velocidade. Oscilação horizontal reportada movimenta o fluxo como um conjunto. Automático e valores desconhecidos usam uma intensidade visual moderada, sem indicar potência elétrica. O desenho ocupa apenas os 24–40 pontos abaixo da saída e desaparece antes da borda do painel. O `TimelineView` usa no máximo 30 fps e pausa quando o painel não está visível ou a conexão não permite controlar. Delegates do popover e da janela acompanham visibilidade e oclusão. Com **Reduzir Movimento**, permanece uma indicação estática. Textos, acessibilidade e avisos usam recursos en/pt-BR; números seguem a região do Mac e nomes recebidos do servidor não são traduzidos.
 
 ## Do's and Don'ts
 

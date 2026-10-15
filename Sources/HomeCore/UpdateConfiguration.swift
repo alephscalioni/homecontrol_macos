@@ -23,6 +23,6 @@ public struct UpdateConfiguration: Equatable, Sendable {
 
     public enum ConfigurationError: LocalizedError {
         case invalid
-        public var errorDescription: String? { "A configuração de atualizações precisa de um feed HTTPS e de uma chave pública Ed25519 válida." }
+        public var errorDescription: String? { L10n.text("A configuração de atualizações precisa de um feed HTTPS e de uma chave pública Ed25519 válida.") }
     }
 }

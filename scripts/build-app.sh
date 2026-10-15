@@ -8,6 +8,10 @@ APP_DIR="$PWD/build/HomeControl.app"
 mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources"
 cp "$BIN_DIR/HomeControl" "$APP_DIR/Contents/MacOS/HomeControl"
 cp -R "$BIN_DIR/HomeControl_HomeControl.bundle" "$APP_DIR/Contents/Resources/"
+cp -R "$BIN_DIR/HomeControl_HomeCore.bundle" "$APP_DIR/Contents/Resources/"
+for LOCALIZATION in Sources/HomeControl/Resources/*.lproj(N); do
+    ditto "$LOCALIZATION" "$APP_DIR/Contents/Resources/${LOCALIZATION:t}"
+done
 cp Info.plist "$APP_DIR/Contents/Info.plist"
 UPDATE_CONFIG="${HOMECONTROL_UPDATE_CONFIG:-$PWD/config/updates.json}"
 if [[ -f "$UPDATE_CONFIG" ]]; then

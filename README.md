@@ -1,12 +1,16 @@
 # HomeControl
 
+[English](README.en-US.md)
+
 Controle os dispositivos do seu Home Assistant pela barra de menus do Mac. Ajuste o ar-condicionado, acenda as luzes e acesse os controles de cada cômodo sem abrir o navegador.
+
+O app acompanha o idioma do Mac, com português do Brasil e inglês dos Estados Unidos. Os nomes dos seus aparelhos e cômodos permanecem como você cadastrou no Home Assistant.
 
 ## Instalação
 
 Requer um Mac com Apple Silicon (M1 ou posterior) e macOS 14 ou superior. Seu Home Assistant precisa estar configurado e acessível pelo Mac.
 
-A versão atual está assinada pelo desenvolvedor, mas a notarização da Apple ainda está pendente. O macOS pode bloquear sua abertura.
+A versão atual é assinada pelo desenvolvedor e distribuída sem notarização da Apple. O macOS pode bloquear sua abertura.
 
 1. [Baixe a versão mais recente](https://github.com/alephscalioni/homecontrol_macos/releases/latest).
 2. Extraia o ZIP e mova **HomeControl.app** para a pasta **Aplicativos**.
@@ -28,7 +32,7 @@ Seus dispositivos e cômodos aparecerão após a conexão. Não é necessário i
 
 O app tem três abas:
 
-- **Ar-condicionado:** escolha o cômodo e ajuste a temperatura, o modo, a velocidade e a direção do ar. Arraste a barra de temperatura e solte para confirmar, ou use os botões **−** e **+**.
+- **Ar-condicionado:** escolha o cômodo e ajuste a temperatura, o modo, a velocidade e a direção do ar. Arraste a barra de temperatura e solte para confirmar, ou use os botões **−** e **+**. A animação do vento acompanha a velocidade do ventilador informada pelo aparelho.
 - **Cômodos:** abra um ambiente para acessar luzes, tomadas, interruptores, cortinas, ventiladores e leituras dos sensores. Clique no nome de um aparelho para abrir seus detalhes.
 - **Favoritos:** reúna os itens que você usa com mais frequência. Para adicionar ou remover um favorito, clique na estrela do item.
 

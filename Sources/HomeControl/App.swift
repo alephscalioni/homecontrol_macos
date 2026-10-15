@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import HomeCore
 
 @main
 struct HomeControlMain {
@@ -13,7 +14,7 @@ struct HomeControlMain {
 }
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowDelegate {
     private let store = HomeStore()
     private let updater = AppUpdater()
     private var statusItem: NSStatusItem!
@@ -32,11 +33,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.image?.isTemplate = true
             button.imagePosition = .imageOnly
             button.target = self; button.action = #selector(togglePopover)
-            button.toolTip = "HomeControl · sua casa a um clique"
+            button.toolTip = L10n.text("HomeControl · sua casa a um clique")
             button.setAccessibilityLabel("HomeControl")
         }
         let root = PanelView().environmentObject(store).environmentObject(updater)
+            .environment(\.demoReduceMotion, demo && CommandLine.arguments.contains("--reduce-motion"))
         popover = NSPopover()
+        popover.delegate = self
         popover.behavior = .semitransient
         popover.contentSize = NSSize(width: 440, height: 632)
         popover.appearance = NSAppearance(named: .darkAqua)
@@ -46,14 +49,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         if CommandLine.arguments.contains("--window") {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 440, height: 632), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
-            window.title = demo ? "HomeControl · Demonstração" : "HomeControl"
+            window.title = demo ? L10n.text("HomeControl · Demonstração") : "HomeControl"
             window.isReleasedWhenClosed = false
+            window.delegate = self
             window.appearance = NSAppearance(named: .darkAqua)
             window.isOpaque = false
             window.backgroundColor = .clear
             window.contentViewController = NSHostingController(rootView: root)
             window.center(); window.makeKeyAndOrderFront(nil)
             previewWindow = window
+            updatePanelVisibility()
             NSApp.activate(ignoringOtherApps: true)
         } else if store.serverAddress.isEmpty || demo {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { self.showPopover() }
@@ -79,17 +84,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidResignActive(_ notification: Notification) {
         if popover?.isShown == true { popover.close() }
     }
+    func popoverDidShow(_ notification: Notification) { updatePanelVisibility() }
+    func popoverDidClose(_ notification: Notification) { updatePanelVisibility() }
+    func windowDidChangeOcclusionState(_ notification: Notification) { updatePanelVisibility() }
+    func windowDidMiniaturize(_ notification: Notification) { updatePanelVisibility() }
+    func windowDidDeminiaturize(_ notification: Notification) { updatePanelVisibility() }
+    func windowWillClose(_ notification: Notification) { store.isPanelVisible = popover?.isShown == true }
+    private func updatePanelVisibility() {
+        let windowVisible = previewWindow.map { $0.isVisible && !$0.isMiniaturized && $0.occlusionState.contains(.visible) } ?? false
+        store.isPanelVisible = popover?.isShown == true || windowVisible
+    }
     private func installMainMenu() {
         let main = NSMenu()
         let appItem = NSMenuItem(); main.addItem(appItem)
         let appMenu = NSMenu(); appItem.submenu = appMenu
-        appMenu.addItem(withTitle: "Sair do HomeControl", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenu.addItem(withTitle: L10n.text("Sair do HomeControl"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         let editItem = NSMenuItem(); main.addItem(editItem)
-        let editMenu = NSMenu(title: "Editar"); editItem.submenu = editMenu
-        editMenu.addItem(withTitle: "Recortar", action: #selector(NSText.cut(_:)), keyEquivalent: "x")
-        editMenu.addItem(withTitle: "Copiar", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
-        editMenu.addItem(withTitle: "Colar", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
-        editMenu.addItem(withTitle: "Selecionar tudo", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+        let editMenu = NSMenu(title: L10n.text("Editar")); editItem.submenu = editMenu
+        editMenu.addItem(withTitle: L10n.text("Recortar"), action: #selector(NSText.cut(_:)), keyEquivalent: "x")
+        editMenu.addItem(withTitle: L10n.text("Copiar"), action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+        editMenu.addItem(withTitle: L10n.text("Colar"), action: #selector(NSText.paste(_:)), keyEquivalent: "v")
+        editMenu.addItem(withTitle: L10n.text("Selecionar tudo"), action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
         NSApp.mainMenu = main
     }
 }

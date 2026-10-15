@@ -12,13 +12,13 @@ struct SetupView: View {
             VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 12) {
                     Image(systemName: "house").font(.system(size: 40, weight: .ultraLight)).foregroundStyle(Palette.accent).padding(.top, 4)
-                    Text(store.phase == .connected ? "Sua casa está conectada." : "Sua casa, a um clique.")
+                    Text(store.phase == .connected ? L10n.text("Sua casa está conectada.") : L10n.text("Sua casa, a um clique."))
                         .font(.system(size: 29, weight: .medium, design: .rounded)).tracking(-0.6)
-                    Text("Conecte o Home Assistant e controle seus aparelhos pela barra de menus.")
+                    Text(L10n.text("Conecte o Home Assistant e controle seus aparelhos pela barra de menus."))
                         .font(.system(size: 13)).lineSpacing(4).foregroundStyle(Palette.secondary)
                 }
                 VStack(alignment: .leading, spacing: 9) {
-                    Text("Endereço do Home Assistant").font(.system(size: 12, weight: .medium))
+                    Text(L10n.text("Endereço do Home Assistant")).font(.system(size: 12, weight: .medium))
                     TextField("", text: $address)
                         .textFieldStyle(.plain).font(.system(size: 13)).padding(13)
                         .background(Palette.surface, in: RoundedRectangle(cornerRadius: 10))
@@ -30,32 +30,32 @@ struct SetupView: View {
                             }
                         }
                         .focused($focusedField, equals: .address).onSubmit { focusedField = .token }
-                        .accessibilityLabel("Endereço do Home Assistant")
+                        .accessibilityLabel(L10n.text("Endereço do Home Assistant"))
                 }
                 VStack(alignment: .leading, spacing: 9) {
-                    Text("Token de acesso").font(.system(size: 12, weight: .medium))
+                    Text(L10n.text("Token de acesso")).font(.system(size: 12, weight: .medium))
                     SecureField("", text: $token)
                         .textFieldStyle(.plain).font(.system(size: 13)).padding(13)
                         .background(Palette.surface, in: RoundedRectangle(cornerRadius: 10))
                         .modifier(GlassSurface(radius: 10))
                         .overlay(alignment: .leading) {
                             if token.isEmpty {
-                                Text(store.serverAddress.isEmpty ? "Cole seu token de longa duração" : "Deixe vazio para usar o token salvo")
+                                Text(store.serverAddress.isEmpty ? L10n.text("Cole seu token de longa duração") : L10n.text("Deixe vazio para usar o token salvo"))
                                     .font(.system(size: 13)).foregroundStyle(Palette.secondary)
                                     .padding(.horizontal, 13).allowsHitTesting(false).accessibilityHidden(true)
                             }
                         }
                         .focused($focusedField, equals: .token).onSubmit(connect)
-                        .accessibilityLabel("Token de acesso")
-                    Text("Crie em Perfil → Segurança → Tokens de acesso de longa duração, no seu Home Assistant.")
+                        .accessibilityLabel(L10n.text("Token de acesso"))
+                    Text(L10n.text("Crie em Perfil → Segurança → Tokens de acesso de longa duração, no seu Home Assistant."))
                         .font(.system(size: 11)).lineSpacing(3).foregroundStyle(Palette.secondary)
-                    Label("Seu token fica no Chaves deste Mac.", systemImage: "lock")
+                    Label(L10n.text("Seu token fica no Chaves deste Mac."), systemImage: "lock")
                         .font(.system(size: 11)).foregroundStyle(Palette.accent).padding(.top, 3)
                 }
                 Button(action: connect) {
                     HStack(spacing: 8) {
                         if store.isConnecting { ProgressView().controlSize(.small).tint(Palette.background) }
-                        Text(store.isConnecting ? "Conectando…" : "Conectar ao Home Assistant")
+                        Text(store.isConnecting ? L10n.text("Conectando…") : L10n.text("Conectar ao Home Assistant"))
                     }.font(.system(size: 13, weight: .semibold)).frame(maxWidth: .infinity)
                 }.buttonStyle(TactileButtonStyle(prominent: true)).disabled(store.isConnecting || address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 Button {
@@ -63,13 +63,13 @@ struct SetupView: View {
                     if store.entities.isEmpty || store.phase == .disconnected { store.useDemo() }
                     else { store.showSettings = false }
                 } label: {
-                    Text(store.entities.isEmpty ? "Explorar demonstração" : "Voltar aos controles").font(.system(size: 12)).frame(maxWidth: .infinity)
+                    Text(store.entities.isEmpty ? L10n.text("Explorar demonstração") : L10n.text("Voltar aos controles")).font(.system(size: 12)).frame(maxWidth: .infinity)
                 }.buttonStyle(.plain).foregroundStyle(Palette.secondary)
                 if !store.serverAddress.isEmpty {
                     HStack {
-                        Text("\(store.entities.count) dispositivos compatíveis").font(.system(size: 10)).foregroundStyle(Palette.secondary)
+                        Text(store.entities.count == 1 ? L10n.text("1 dispositivo compatível") : L10n.format("%ld dispositivos compatíveis", store.entities.count)).font(.system(size: 10)).foregroundStyle(Palette.secondary)
                         Spacer()
-                        Button("Esquecer conexão") { store.forgetConnection(); token = ""; address = "" }.font(.system(size: 10)).buttonStyle(.plain).foregroundStyle(Palette.secondary)
+                        Button(L10n.text("Esquecer conexão")) { store.forgetConnection(); token = ""; address = "" }.font(.system(size: 10)).buttonStyle(.plain).foregroundStyle(Palette.secondary)
                     }
                 }
                 if let notice = store.metadataNotice { Text(notice).font(.system(size: 11)).foregroundStyle(Palette.secondary) }

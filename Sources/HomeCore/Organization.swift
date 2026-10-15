@@ -5,14 +5,14 @@ public enum EntityPurpose: String, Codable, CaseIterable, Identifiable, Sendable
     public var id: String { rawValue }
     public var title: String {
         switch self {
-        case .controls: return "Controles"
-        case .environment: return "Ambiente e segurança"
-        case .consumption: return "Consumo"
-        case .routines: return "Horários e rotinas"
-        case .maintenance: return "Manutenção"
-        case .configuration: return "Configurações dos aparelhos"
-        case .diagnostics: return "Diagnóstico"
-        case .other: return "Outras leituras"
+        case .controls: return L10n.text("Controles")
+        case .environment: return L10n.text("Ambiente e segurança")
+        case .consumption: return L10n.text("Consumo")
+        case .routines: return L10n.text("Horários e rotinas")
+        case .maintenance: return L10n.text("Manutenção")
+        case .configuration: return L10n.text("Configurações dos aparelhos")
+        case .diagnostics: return L10n.text("Diagnóstico")
+        case .other: return L10n.text("Outras leituras")
         }
     }
     public var icon: String {
@@ -35,12 +35,12 @@ public enum ConsumptionMetric: String, CaseIterable, Identifiable, Sendable {
     public var id: String { rawValue }
     public var title: String {
         switch self {
-        case .energy: return "Energia consumida"
-        case .power: return "Potência agora"
-        case .water: return "Água"
-        case .gas: return "Gás"
-        case .electrical: return "Medições elétricas"
-        case .other: return "Outras medições"
+        case .energy: return L10n.text("Energia consumida")
+        case .power: return L10n.text("Potência agora")
+        case .water: return L10n.text("Água")
+        case .gas: return L10n.text("Gás")
+        case .electrical: return L10n.text("Medições elétricas")
+        case .other: return L10n.text("Outras medições")
         }
     }
     public static func classify(_ entity: HAEntity) -> Self {
@@ -55,13 +55,13 @@ public enum ConsumptionMetric: String, CaseIterable, Identifiable, Sendable {
         return .other
     }
     /// Only supplied periods are described. Counters across devices or periods are never added.
-    public static func period(_ entity: HAEntity) -> String? {
+    public static func period(_ entity: HAEntity, locale: Locale? = nil) -> String? {
         let id = entity.id
-        if id.hasSuffix("_yesterday") { return "Ontem" }
-        if id.hasSuffix("_this_month") { return "Este mês" }
-        if id.hasSuffix("_last_month") { return "Mês passado" }
-        if id.hasSuffix("_today") { return "Hoje" }
-        if ["total", "total_increasing"].contains(entity.text("state_class") ?? "") || id.hasSuffix("_energia_total") { return "Contador acumulado" }
+        if id.hasSuffix("_yesterday") { return L10n.text("Ontem", locale: locale) }
+        if id.hasSuffix("_this_month") { return L10n.text("Este mês", locale: locale) }
+        if id.hasSuffix("_last_month") { return L10n.text("Mês passado", locale: locale) }
+        if id.hasSuffix("_today") { return L10n.text("Hoje", locale: locale) }
+        if ["total", "total_increasing"].contains(entity.text("state_class") ?? "") || id.hasSuffix("_energia_total") { return L10n.text("Contador acumulado", locale: locale) }
         return nil
     }
 }

@@ -204,7 +204,7 @@ public final class HomeAssistantClient {
         case "result":
             guard let rawID = value["id"].number else { return }
             if value["success"].bool == true { finish(Int(rawID), result: .success(value["result"])) }
-            else { finish(Int(rawID), result: .failure(HAError.server(value["error"]["message"].string ?? "O Home Assistant recusou a ação."))) }
+            else { finish(Int(rawID), result: .failure(HAError.server(value["error"]["message"].string ?? L10n.text("O Home Assistant recusou a ação.")))) }
         case "event":
             let event = value["event"]
             if let type = event["event_type"].string, ["area_registry_updated", "device_registry_updated", "entity_registry_updated"].contains(type) {

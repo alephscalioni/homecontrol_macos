@@ -22,7 +22,7 @@ Control Home Assistant devices from a compact menu-bar panel, following the supp
 
 ## Operating Context
 
-Each user connects their own Home Assistant instance. Credentials are stored locally in macOS Keychain. Portuguese is the interface language. The repository contains synthetic demonstration fixtures and no configured household.
+Each user connects their own Home Assistant instance. Credentials are stored locally in macOS Keychain. The interface follows the Mac's language, with en-US and pt-BR and English fallback. Device and area names supplied by Home Assistant stay unchanged. The repository contains synthetic demonstration fixtures and no configured household.
 
 ## Capabilities and Constraints
 
@@ -32,6 +32,7 @@ Each user connects their own Home Assistant instance. Credentials are stored loc
 - Daily controls and environmental readings lead the room view. Consumption, schedules, maintenance, configuration, diagnostics and unknown readings are separate collapsed sections. Local, per-server classification/hiding overrides are reversible and do not modify HA entities.
 - Consumption retains the device, unit and supplied period; accumulated energy is separate from instantaneous power, with no synthetic aggregate totals.
 - Display only controls supported by each entity.
+- Climate airflow follows reported fan speed and horizontal swing. Unknown or automatic fan speed uses a moderate visual fallback; this is not an electrical-power measurement. Motion pauses when hidden, off or disconnected; Reduce Motion retains a static indication.
 - Live state updates; explicit connection and command errors.
 - Room overview matching Home Assistant areas, mixed controls/readings, stable room IDs, and detailed controls with return navigation.
 - Automatic registry updates through events, plus reconciliation every minute. A failed metadata load is not represented as an empty home.

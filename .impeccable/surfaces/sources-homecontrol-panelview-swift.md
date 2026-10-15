@@ -21,7 +21,7 @@ FIRST VIEWPORT: A 440-pixel-wide panel. Category icons along the top, device and
 
 FORM: User-pinned screenshot, direct-build approval, and the subsequent explicit glassmorphism request override concept seed 974d5099. Preserve the screenshot's composition while translating its opaque surfaces to native glass. Accessibility Reduce Transparency keeps an opaque fallback.
 
-SIGNATURE: Soft, animated airflow below the air conditioner only while it is powered on, respecting Reduce Motion. Every control reflects server capabilities; pending commands do not fabricate live states.
+SIGNATURE: Soft, continuous airflow below the powered-on air conditioner follows reported fan speed and horizontal swing. Integrated phase and gentle strength changes preserve continuity. Hidden panels stop ticking; Reduce Motion uses a static indication. The app follows macOS en-US/pt-BR preferences while preserving server-provided names. Every control reflects server capabilities; pending commands do not fabricate live states.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 

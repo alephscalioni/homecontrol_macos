@@ -1,4 +1,5 @@
 import SwiftUI
+import HomeCore
 
 enum Palette {
     static let background = Color(red: 0.047, green: 0.051, blue: 0.047)
@@ -118,19 +119,22 @@ struct OptionTile: View {
 
 func displayNumber(_ value: Double?) -> String {
     guard let value, value.isFinite else { return "—" }
-    return value.formatted(.number.precision(.fractionLength(0...1)).locale(Locale(identifier: "pt_BR")))
+    return L10n.number(value)
 }
 
 func displayName(_ value: String) -> String {
-    let names = ["cool": "Resfriar", "heat": "Aquecer", "off": "Desligado", "on": "Ligado",
-                 "auto": "Auto", "heat_cool": "Aquecer / resfriar", "dry": "Desumidificar", "fan_only": "Ventilar",
-                 "low": "Baixa", "medium": "Média", "high": "Alta", "none": "Nenhum", "eco": "Eco",
-                 "sleep": "Sono", "comfort": "Conforto", "home": "Em casa", "away": "Ausente", "boost": "Turbo",
-                 "vertical": "Vertical", "horizontal": "Horizontal", "both": "Ambos", "normal": "Normal",
-                 "open": "Aberta", "closed": "Fechada", "opening": "Abrindo", "closing": "Fechando",
-                 "unavailable": "Indisponível", "unknown": "Sem leitura", "cooling": "Resfriando",
-                 "heating": "Aquecendo", "idle": "Em espera", "drying": "Desumidificando", "fan": "Ventilando"]
-    return names[value] ?? value.replacingOccurrences(of: "_", with: " ").capitalized
+    let names = ["cool": L10n.text("Resfriar"), "heat": L10n.text("Aquecer"), "off": L10n.text("Desligado"), "on": L10n.text("Ligado"),
+                 "auto": L10n.text("Auto"), "heat_cool": L10n.text("Aquecer / resfriar"), "dry": L10n.text("Desumidificar"), "fan_only": L10n.text("Ventilar"),
+                 "low": L10n.text("Baixa"), "medium": L10n.text("Média"), "high": L10n.text("Alta"), "none": L10n.text("Nenhum"), "eco": L10n.text("Eco"),
+                 "sleep": L10n.text("Sono"), "comfort": L10n.text("Conforto"), "home": L10n.text("Em casa"), "away": L10n.text("Ausente"), "boost": L10n.text("Turbo"),
+                 "vertical": L10n.text("Vertical"), "horizontal": L10n.text("Horizontal"), "both": L10n.text("Ambos"), "normal": L10n.text("Normal"),
+                 "open": L10n.text("Aberta"), "closed": L10n.text("Fechada"), "opening": L10n.text("Abrindo"), "closing": L10n.text("Fechando"),
+                 "unavailable": L10n.text("Indisponível"), "unknown": L10n.text("Sem leitura"), "cooling": L10n.text("Resfriando"),
+                 "heating": L10n.text("Aquecendo"), "idle": L10n.text("Em espera"), "drying": L10n.text("Desumidificando"), "fan": L10n.text("Ventilando")]
+    let aliases = ["quiet": L10n.text("Silencioso"), "silent": L10n.text("Silencioso"), "turbo": L10n.text("Turbo"),
+                   "mid": L10n.text("Média"), "med": L10n.text("Média"), "min": L10n.text("Mínima"),
+                   "minimum": L10n.text("Mínima"), "max": L10n.text("Máxima"), "maximum": L10n.text("Máxima")]
+    return names[value] ?? aliases[value] ?? value.replacingOccurrences(of: "_", with: " ").capitalized
 }
 
 struct ControlSlider: View {
@@ -188,7 +192,7 @@ struct ControlSlider: View {
             if showButtons { adjustButton("plus", delta: step) }
         }
         .opacity(enabled && value != nil ? 1 : 0.4)
-        .help("Arraste para ajustar \(label.lowercased()). Use as setas do teclado ou os botões de menos e mais.")
+        .help(L10n.format("Arraste para ajustar %@. Use as setas do teclado ou os botões de menos e mais.", label.lowercased()))
         .onDisappear { draft = nil; onPreview?(nil) }
     }
     private func snapped(_ number: Double) -> Double {
@@ -200,6 +204,6 @@ struct ControlSlider: View {
                 .frame(width: 36, height: 36).background(Palette.surface, in: Circle())
         }.buttonStyle(.plain)
             .disabled(value == nil || (delta < 0 ? current <= bounds.lowerBound : current >= bounds.upperBound))
-            .accessibilityLabel("\(delta < 0 ? "Diminuir" : "Aumentar") \(label.lowercased())")
+            .accessibilityLabel(L10n.format(delta < 0 ? "Diminuir %@" : "Aumentar %@", label.lowercased()))
     }
 }
