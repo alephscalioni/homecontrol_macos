@@ -46,6 +46,23 @@ Dentro de um cômodo, os controles do dia a dia aparecem primeiro. Leituras de c
 
 Use **Organizar** para mudar a classificação de um item ou ocultá-lo. É possível restaurar os itens ocultos nessa mesma tela. Essas preferências ficam salvas neste Mac.
 
+## Widgets na Mesa
+
+Mantenha o HomeControl aberto e conectado. Clique com o botão direito na Mesa, escolha **Editar Widgets** e procure **HomeControl**.
+
+- **Um aparelho:** escolha uma luz, tomada, interruptor, ventilador, ar-condicionado ou cena. O ar mantém os botões de temperatura **−/+** quando oferece esse ajuste.
+- **Até 4 controles:** misture até quatro itens e escolha a ordem em que aparecem.
+
+Para trocar os itens depois, clique com o botão direito no próprio widget, escolha **Editar** e altere **Aparelho** ou **Itens**. A busca aceita nome, cômodo e tipo, como “luzes”. Não é necessário marcar um item como favorito para usá-lo no widget.
+
+Aparelhos indisponíveis ficam com os controles desativados. Se um item for removido ou você trocar de conexão, escolha-o novamente na edição do widget.
+
+## Favoritos na Central de Controle
+
+No macOS 26 ou superior, abra a **Central de Controle → Editar Controles**, procure **HomeControl** e adicione um controle de energia ou de cena. Escolha um item que você marcou como favorito no app. Para controlar mais de um favorito, adicione mais controles.
+
+Os controles de energia ligam e desligam o aparelho; os de cena a ativam. Ajustes de temperatura ficam nos widgets ou no app.
+
 ## Atualizar o app
 
 Quando o HomeControl perguntar sobre atualizações, permita a busca automática e marque a opção de baixar e instalar novas versões. Para procurar uma atualização manualmente, abra o menu **⋯ → Verificar atualizações…**.

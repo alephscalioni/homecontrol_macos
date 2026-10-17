@@ -20,7 +20,8 @@ if [[ ! -f "$APP_DIR/Contents/Info.plist" ]]; then
     exit 1
 fi
 codesign --verify --deep --strict "$APP_DIR"
-TOOLS="$PWD/.build/artifacts/sparkle/Sparkle/bin"
+TOOLS="$PWD/.build/xcode-packages/artifacts/sparkle/Sparkle/bin"
+[[ -d "$TOOLS" ]] || TOOLS="$PWD/.build/artifacts/sparkle/Sparkle/bin"
 PUBLIC_KEY="$("$TOOLS/generate_keys" --account "$SIGNING_ACCOUNT" -p)"
 python3 - "$UPDATE_CONFIG" "$PUBLIC_KEY" "$DOWNLOAD_BASE" "$APP_DIR/Contents/Info.plist" <<'PY'
 import json, plistlib, sys

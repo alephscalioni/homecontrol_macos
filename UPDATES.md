@@ -6,10 +6,10 @@ Sem configuração, o app funciona normalmente e não inicia o atualizador. Para
 
 ## Publicar uma versão deste projeto
 
-O script de build usa `config/updates.json` por padrão. A conta de assinatura é `br.com.homecontrol.updates` no Chaves do mantenedor. Incremente as versões em `Info.plist`, gere o pacote e publique os assets na mesma release:
+O script de build usa `config/updates.json` por padrão. A conta de assinatura é `br.com.homecontrol.updates` no Chaves do mantenedor. Incremente as versões em `Info.plist`; o script aplica esses valores ao app e à extensão. Gere o pacote e publique os assets na mesma release:
 
 ```sh
-./scripts/prepare-release.sh config/updates.json https://github.com/alephscalioni/homecontrol_macos/releases/download/v0.3.3/
+./scripts/prepare-release.sh config/updates.json https://github.com/alephscalioni/homecontrol_macos/releases/download/v0.4.0/
 ```
 
 O `appcast.xml` assinado deve ser um asset da release marcada como **Latest**. O endereço `releases/latest/download/appcast.xml` permanece estável; o ZIP de cada versão usa uma URL versionada. Publique os arquivos completos como rascunho antes de tornar a release Latest. Não substitua os bytes de um ZIP já assinado.
@@ -63,7 +63,7 @@ Depois de notarizar e exportar o app pelo Xcode, empacote essa cópia sem recomp
 
 ```sh
 HOMECONTROL_PREBUILT_APP='/caminho/da/exportacao/HomeControl.app' \
-./scripts/prepare-release.sh config/updates.json https://github.com/alephscalioni/homecontrol_macos/releases/download/v0.3.3/
+./scripts/prepare-release.sh config/updates.json https://github.com/alephscalioni/homecontrol_macos/releases/download/v0.4.0/
 ```
 
 O script verifica a assinatura do app e sua configuração de atualizações antes de empacotar. Confira também `xcrun stapler validate` e `spctl --assess --type execute` na cópia exportada antes de publicar. Os símbolos de depuração (`.dSYM`) ficam fora do `.app` e não devem ser publicados com os downloads.

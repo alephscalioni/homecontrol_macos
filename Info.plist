@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict>
-    <key>CFBundleName</key><string>HomeControl</string>
-    <key>CFBundleDisplayName</key><string>HomeControl</string>
-    <key>CFBundleIdentifier</key><string>br.com.homecontrol.mac</string>
-    <key>CFBundleExecutable</key><string>HomeControl</string>
-    <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleVersion</key><string>6</string>
-    <key>CFBundleShortVersionString</key><string>0.3.3</string>
-    <key>CFBundleDevelopmentRegion</key><string>en</string>
-    <key>CFBundleLocalizations</key><array><string>en</string><string>pt-BR</string></array>
-    <key>CFBundleIconFile</key><string>HomeControl</string>
-    <key>LSMinimumSystemVersion</key><string>14.0.0</string>
-    <key>LSUIElement</key><true/>
-    <key>NSHighResolutionCapable</key><true/>
-    <key>NSLocalNetworkUsageDescription</key><string>HomeControl connects to your Home Assistant to display and control your devices.</string>
-    <key>NSAppTransportSecurity</key><dict><key>NSAllowsArbitraryLoads</key><true/></dict>
-</dict></plist>
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>HomeControl</string>
+	<key>CFBundleExecutable</key>
+	<string>HomeControl</string>
+	<key>CFBundleIconFile</key>
+	<string>HomeControl</string>
+	<key>CFBundleIdentifier</key>
+	<string>br.com.homecontrol.mac</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>pt-BR</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>HomeControl</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.4.0</string>
+	<key>CFBundleVersion</key>
+	<string>9</string>
+	<key>HomeControlAppGroup</key>
+	<string>$(HOME_CONTROL_APP_GROUP)</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>HomeControl connects to your Home Assistant to display and control your devices.</string>
+</dict>
+</plist>

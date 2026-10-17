@@ -46,6 +46,23 @@ Everyday controls appear first in each room. Consumption, maintenance, and other
 
 Use **Organize** to change an item’s classification or hide it. You can restore hidden items in the same view. These preferences are saved on this Mac.
 
+## Desktop widgets
+
+Keep HomeControl open and connected. Right-click the desktop, choose **Edit Widgets**, and search for **HomeControl**.
+
+- **One device:** choose a light, outlet, switch, fan, air conditioner, or scene. Air conditioners retain the **−/+** temperature buttons when supported.
+- **Up to 4 controls:** mix up to four items and choose their order.
+
+To change items later, right-click the widget itself, choose **Edit**, and change **Device** or **Items**. Search by name, room, or type, such as “lights”. You do not need to mark an item as a favorite to use it in a widget.
+
+Unavailable devices have disabled controls. If an item is removed or you change connections, choose it again in the widget editor.
+
+## Favorites in Control Center
+
+On macOS 26 or later, open **Control Center → Edit Controls**, search for **HomeControl**, and add a power or scene control. Choose an item you marked as a favorite in the app. Add more controls for additional favorites.
+
+Power controls turn devices on and off; scene controls activate scenes. Temperature adjustments are available in widgets or in the app.
+
 ## Update the app
 
 When HomeControl asks about updates, allow automatic checks and select the option to download and install new versions. To check manually, open **⋯ → Check for Updates…**.

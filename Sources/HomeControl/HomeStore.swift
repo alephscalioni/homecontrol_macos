@@ -360,6 +360,112 @@ final class HomeStore: ObservableObject {
         if favoriteIDs.contains(entity.id) { favoriteIDs.remove(entity.id) } else { favoriteIDs.insert(entity.id) }
         UserDefaults.standard.set(Array(favoriteIDs), forKey: isDemo ? "favorites.demo" : "favorites")
     }
+    var controlServerID: String { FavoriteControl.serverID(for: isDemo ? "homecontrol-demo" : serverAddress) }
+    var canUseSystemControls: Bool { canControl && registryLoaded }
+
+    var widgetEntities: [HAEntity] {
+        guard registryLoaded else { return [] }
+        return entities.filter {
+            !isHidden($0) && (purpose(of: $0).isEveryday || $0.domain == "scene" || favoriteIDs.contains($0.id))
+                && HomeWidgetSelection.supports(FavoriteControl(entity: $0, serverID: controlServerID))
+        }
+    }
+
+    func waitForControlConnection() async throws {
+        let deadline = Date().addingTimeInterval(15)
+        while (isConnecting || (canControl && !registryLoaded)) && Date() < deadline {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        try Task.checkCancellation()
+        guard canUseSystemControls else { throw ControlIntentError.unavailable }
+    }
+
+    func controlEntity(for controlID: String) throws -> HAEntity {
+        guard let entity = entities.first(where: {
+            favoriteIDs.contains($0.id) && !isHidden($0)
+                && FavoriteControl(entity: $0, serverID: controlServerID).id == controlID
+        }) else { throw ControlIntentError.missingFavorite }
+        return entity
+    }
+
+    func performFavoriteControl(id: String, power: Bool?) async throws {
+        try await waitForControlConnection()
+        let entity = try controlEntity(for: id)
+        guard entity.available, !pendingEntities.contains(entity.id) else { throw ControlIntentError.unavailable }
+        let kind = FavoriteControl(entity: entity, serverID: controlServerID).kind
+        let command: ServiceCall
+        if let power {
+            guard kind == .toggle else { throw ControlIntentError.unsupported }
+            if entity.isOn == power { return }
+            guard let value = ServiceCall.setPower(entity, isOn: power) else { throw ControlIntentError.unsupported }
+            command = value
+        } else {
+            guard kind == .scene else { throw ControlIntentError.unsupported }
+            command = ServiceCall(entity, "turn_on")
+        }
+        try await performSystemControl(command, entity: entity, refresh: power != nil)
+    }
+
+    func performClimateWidgetControl(id: String, direction: Int? = nil, power: Bool? = nil) async throws {
+        try await waitForControlConnection()
+        guard let entity = entities.first(where: {
+            $0.domain == "climate" && !isHidden($0)
+                && FavoriteControl(entity: $0, serverID: controlServerID).id == id
+        }) else { throw ControlIntentError.missingFavorite }
+        guard entity.available, !pendingEntities.contains(entity.id) else { throw ControlIntentError.unavailable }
+        let command: ServiceCall
+        if let direction {
+            guard let value = ServiceCall.adjustTemperature(entity, direction: direction) else { throw ControlIntentError.unsupported }
+            command = value
+        } else if let power {
+            if entity.isOn == power { return }
+            guard let value = ServiceCall.setPower(entity, isOn: power) else { throw ControlIntentError.unsupported }
+            command = value
+        } else { throw ControlIntentError.unsupported }
+        try await performSystemControl(command, entity: entity, refresh: true)
+    }
+
+    func performHomeWidgetControl(id: String, power: Bool? = nil) async throws {
+        try await waitForControlConnection()
+        guard let entity = widgetEntities.first(where: {
+            FavoriteControl(entity: $0, serverID: controlServerID).id == id
+        }) else { throw ControlIntentError.missingWidgetItem }
+        guard entity.available, !pendingEntities.contains(entity.id) else { throw ControlIntentError.unavailable }
+        let value = FavoriteControl(entity: entity, serverID: controlServerID)
+        let command: ServiceCall
+        if let power {
+            guard value.kind == .toggle else { throw ControlIntentError.unsupported }
+            if entity.isOn == power { return }
+            guard let call = ServiceCall.setPower(entity, isOn: power) else { throw ControlIntentError.unsupported }
+            command = call
+        } else {
+            guard value.kind == .scene else { throw ControlIntentError.unsupported }
+            command = ServiceCall(entity, "turn_on")
+        }
+        try await performSystemControl(command, entity: entity, refresh: power != nil)
+    }
+
+    private func performSystemControl(_ command: ServiceCall, entity: HAEntity, refresh: Bool) async throws {
+        let current = connectionGeneration
+        pendingEntities.insert(entity.id)
+        defer { if current == connectionGeneration { pendingEntities.remove(entity.id) } }
+        if isDemo {
+            if let index = entities.firstIndex(where: { $0.id == entity.id }) { DemoHome.apply(command, to: &entities[index]) }
+        } else {
+            try await client.call(command)
+            guard current == connectionGeneration else { throw HAError.disconnected }
+            guard refresh else { return }
+            // Query the acknowledged server state before WidgetKit asks for its value again.
+            let result = try await client.request(["type": .string("get_states")])
+            guard current == connectionGeneration else { throw HAError.disconnected }
+            let refreshed = try JSONDecoder().decode([HAEntity].self, from: JSONEncoder().encode(result))
+            if let updated = refreshed.first(where: { $0.id == entity.id }),
+               let index = entities.firstIndex(where: { $0.id == entity.id }),
+               updated.timestamp == nil || entities[index].timestamp == nil || updated.timestamp! >= entities[index].timestamp! {
+                entities[index] = updated
+            }
+        }
+    }
     func execute(_ command: ServiceCall?) {
         guard let command, canControl,
               let entity = entities.first(where: { $0.id == command.entityID }), entity.available,

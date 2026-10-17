@@ -40,6 +40,7 @@ Each user connects their own Home Assistant instance. Credentials are stored loc
 - Store access tokens in macOS Keychain, never in source or plain preferences.
 - Clearly identified demonstration data until connected; opening a preview must not send commands to a real home.
 - No locks, alarms, garage doors, or other security controls in the initial scope.
+- Desktop widgets: a configurable large widget with up to four ordered controls (lights, switches, fans, climate and scenes), plus a medium single-device widget using the same catalog. Selection belongs to each widget; removing an entity or changing accounts never selects a replacement. The single-device widget can select lights and scenes as well as climate; climate retains its temperature artwork, direct step adjustments and supported power actions. WidgetKit reads display-only shared data; credential access and service execution stay in the host process. Included in release 0.4.0.
 
 ## Brand Commitments
 

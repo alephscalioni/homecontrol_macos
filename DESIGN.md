@@ -288,6 +288,12 @@ O fluxo aparece apenas com entidade ligada e disponível. Quinze trajetórias su
 
 ## Do's and Don'ts
 
+### Prévia do widget de clima
+
+`ClimateWidgetCard` mantém a linguagem do painel em um cartão médio de 340 × 160 pontos, com 16 pontos de margem interna. O cômodo ocupa o cabeçalho; a temperatura desejada usa sistema arredondado de 44 pontos, acompanhada da leitura ambiente. O mesmo raster do aparelho fica à direita, sobre os botões −/+ de 48 × 30 pontos. O controle de energia tem 28 pontos. Uma indicação estática de ar acompanha o estado ligado; o widget não mantém animação contínua.
+
+O fundo nativo do WidgetKit usa o tom de vidro fumê do app; o conteúdo usa as cores de texto e acento existentes. A janela de demonstração identifica os dados como Demonstração. Ações indisponíveis e limites de temperatura desabilitam seus botões. O widget oferece ações diretas, sem atalhos para abrir um painel externo. A colocação e as ações da extensão precisam ser verificadas na galeria nativa, separadamente da prévia.
+
 ### Do:
 
 - **Do** preservar o painel de 440 × 632 pontos, as três abas rotuladas e a composição aprovada do detalhe de clima.
@@ -307,3 +313,9 @@ O fluxo aparece apenas com entidade ligada e disponível. Quinze trajetórias su
 - **Don't** acrescentar controles de fechaduras, alarmes ou portas de garagem ao escopo inicial.
 
 A linha completa de um aparelho com detalhe é um botão com altura mínima de 44 pontos; energia e favorito são ações separadas. Os grupos recolhidos expandem por toda a faixa do título, com mínimo de 40 pontos; o chevron apenas indica o estado.
+
+### Widget com até quatro controles
+
+`HomeWidgetBoard` usa o formato grande de 340 × 354 pontos, margem de 14 pontos e uma grade de até duas colunas. Cada posição mostra o cômodo, o nome do item e seus controles suportados. A ordem é escolhida pela pessoa e guardada na configuração de cada widget. Luzes, tomadas e ventiladores usam energia; cenas usam ativação; ar-condicionado tem energia e ajuste por passos. O formato médio Um aparelho aceita os mesmos tipos do formato grande; ao escolher clima, usa o cartão original do ar-condicionado. Os modelos nativos indicam explicitamente o gesto de botão direito e Editar para trocar itens.
+
+A prévia tem um botão Trocar item ou Trocar itens fora da área que representa o widget. Seu popover permite escolher até quatro itens, deixar posições vazias, mudar a ordem e substituir um item por outro diretamente pelo botão Trocar. A substituição funciona com todas as posições ocupadas. A busca por tipo encontra luzes mesmo sem esse termo no nome do aparelho. Essa configuração usa somente entidades sintéticas. No widget da Mesa, a seleção usa Editar Widget do macOS. Nenhum desses botões de acionamento abre um painel externo.

@@ -20,6 +20,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
     private var statusItem: NSStatusItem!
     private var popover: NSPopover!
     private var previewWindow: NSWindow?
+    private var controlCoordinator: AnyObject?
     private var wakeObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -47,7 +48,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         wakeObserver = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor in self?.store.wake() }
         }
-        if CommandLine.arguments.contains("--window") {
+        if demo && CommandLine.arguments.contains("--widget-preview") {
+            let single = CommandLine.arguments.contains("--widget-single-preview")
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 340, height: single ? 206 : 400), styleMask: [.titled, .closable], backing: .buffered, defer: false)
+            window.title = L10n.text("Widget · Demonstração")
+            window.isReleasedWhenClosed = false; window.delegate = self
+            window.appearance = NSAppearance(named: .darkAqua)
+            window.isOpaque = false; window.backgroundColor = .clear
+            window.contentViewController = NSHostingController(rootView: WidgetDemoView(single: single).environmentObject(store))
+            window.center(); window.makeKeyAndOrderFront(nil)
+            previewWindow = window; updatePanelVisibility()
+            NSApp.activate(ignoringOtherApps: true)
+        } else if CommandLine.arguments.contains("--window") {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 440, height: 632), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
             window.title = demo ? L10n.text("HomeControl · Demonstração") : "HomeControl"
             window.isReleasedWhenClosed = false
@@ -63,6 +75,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         } else if store.serverAddress.isEmpty || demo {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { self.showPopover() }
         }
+        controlCoordinator = HostControlCoordinator(store: store)
+
     }
     @objc private func togglePopover() {
         if popover.isShown { popover.performClose(nil) } else { showPopover() }
@@ -78,6 +92,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         return true
     }
     func applicationWillTerminate(_ notification: Notification) {
+        (controlCoordinator as? HostControlCoordinator)?.stop()
         store.stopConnection()
         if let wakeObserver { NSWorkspace.shared.notificationCenter.removeObserver(wakeObserver) }
     }
@@ -89,7 +104,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
     func windowDidChangeOcclusionState(_ notification: Notification) { updatePanelVisibility() }
     func windowDidMiniaturize(_ notification: Notification) { updatePanelVisibility() }
     func windowDidDeminiaturize(_ notification: Notification) { updatePanelVisibility() }
-    func windowWillClose(_ notification: Notification) { store.isPanelVisible = popover?.isShown == true }
+    func windowWillClose(_ notification: Notification) {
+        store.isPanelVisible = popover?.isShown == true
+        if CommandLine.arguments.contains("--widget-preview"),
+           let window = notification.object as? NSWindow, window === previewWindow {
+            previewWindow = nil
+            store.stopConnection()
+            store.entities = []; store.areas = [:]
+            store.serverAddress = UserDefaults.standard.string(forKey: "serverAddress") ?? ""
+            store.favoriteIDs = Set(UserDefaults.standard.stringArray(forKey: "favorites") ?? [])
+            store.showSettings = true
+            store.restore()
+            updater.start(enabled: true)
+        }
+    }
     private func updatePanelVisibility() {
         let windowVisible = previewWindow.map { $0.isVisible && !$0.isMiniaturized && $0.occlusionState.contains(.visible) } ?? false
         store.isPanelVisible = popover?.isShown == true || windowVisible

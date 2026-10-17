@@ -30,6 +30,10 @@ struct DeviceListView: View {
                     .font(.system(size: 11, weight: .medium)).buttonStyle(.plain).foregroundStyle(Palette.accent)
                     .accessibilityLabel(organizing ? L10n.text("Concluir organização") : L10n.text("Organizar itens"))
             }
+            if #available(macOS 26.0, *), store.category == .favorites, !organizing {
+                Text(L10n.text("No Central de Controle, clique em Editar Controles e procure HomeControl."))
+                    .font(.system(size: 11)).foregroundStyle(Palette.secondary).fixedSize(horizontal: false, vertical: true)
+            }
             if organizing {
                 Text(L10n.text("Use o menu de cada item para mudar seu grupo ou ocultá-lo neste Mac."))
                     .font(.system(size: 11)).foregroundStyle(Palette.secondary).fixedSize(horizontal: false, vertical: true)

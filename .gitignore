@@ -18,3 +18,5 @@ build/
 release-private/
 .updates-test/
 .vscode/
+xcuserdata/
+*.xcuserstate

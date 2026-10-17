@@ -6,6 +6,7 @@ let package = Package(
     defaultLocalization: "en",
     platforms: [.macOS(.v14)],
     products: [
+        .library(name: "HomeCore", targets: ["HomeCore"]),
         .executable(name: "HomeControl", targets: ["HomeControl"]),
         .executable(name: "HomeControlCLI", targets: ["HomeControlCLI"])
     ],
