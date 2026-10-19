@@ -58,6 +58,33 @@ async def handle(reader, writer):
         request = (await reader.readuntil(b"\r\n\r\n")).decode()
         headers = {line.split(":", 1)[0].lower(): line.split(":", 1)[1].strip()
                    for line in request.split("\r\n")[1:] if ":" in line}
+        path = request.split(" ")[1].split("?")[0]
+        if path.startswith(("/api/camera_proxy/", "/api/camera_proxy_stream/")):
+            if headers.get("authorization") != "Bearer test-camera":
+                writer.write(b"HTTP/1.1 401 Unauthorized\r\nContent-Length: 0\r\n\r\n")
+            elif path.endswith("camera.redirect"):
+                writer.write(b"HTTP/1.1 302 Found\r\nLocation: /redirect-must-not-be-followed\r\nContent-Length: 0\r\n\r\n")
+            elif path.endswith("camera.large"):
+                writer.write(b"HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: 99999999\r\n\r\n")
+            elif path.endswith("camera.failure"):
+                writer.write(b"HTTP/1.1 503 Unavailable\r\nContent-Length: 0\r\n\r\n")
+            elif path.endswith("camera.html"):
+                writer.write(b"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 3\r\n\r\nbad")
+            else:
+                # Synthetic 1px PNG. No camera, URL, or household data in this fixture.
+                image = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jWHkAAAAASUVORK5CYII=")
+                if "/camera_proxy_stream/" in path:
+                    writer.write(b"HTTP/1.1 200 OK\r\nContent-Type: multipart/x-mixed-replace; boundary=fixture\r\n\r\n")
+                    for _ in range(3):
+                        part = b"--fixture\r\nContent-Type: image/png\r\nContent-Length: " + str(len(image)).encode() + b"\r\n\r\n" + image + b"\r\n"
+                        writer.write(part[:23]); await writer.drain()
+                        await asyncio.sleep(0.02)
+                        writer.write(part[23:]); await writer.drain()
+                        await asyncio.sleep(0.04)
+                    return
+                writer.write(b"HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: " + str(len(image)).encode() + b"\r\n\r\n" + image)
+            await writer.drain()
+            return
         if "sec-websocket-key" not in headers:
             writer.write(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nOK")
             await writer.drain()
@@ -131,7 +158,10 @@ async def handle(reader, writer):
         pass
     finally:
         writer.close()
-        await writer.wait_closed()
+        try:
+            await writer.wait_closed()
+        except ConnectionError:
+            pass
 
 
 async def main():

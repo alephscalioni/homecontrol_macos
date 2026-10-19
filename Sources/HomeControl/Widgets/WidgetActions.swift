@@ -7,7 +7,16 @@ struct WidgetPowerAction: View {
     let connected: Bool
     private var ready: Bool { connected && control.available }
     var body: some View {
-        if let climate = control.climate {
+        if control.isCamera {
+            HStack(spacing: 4) {
+                Button(intent: RefreshCameraWidgetIntent(device: HomeWidgetEntity(control))) { Image(systemName: "arrow.clockwise") }
+                    .buttonStyle(WidgetTemperatureButtonStyle(width: 28)).disabled(!ready)
+                    .accessibilityLabel(L10n.format("Atualizar imagem de %@", control.name))
+                Button(intent: OpenCameraViewerIntent(device: HomeWidgetEntity(control))) { Image(systemName: "arrow.up.left.and.arrow.down.right") }
+                    .buttonStyle(WidgetTemperatureButtonStyle(width: 28)).disabled(!ready)
+                    .accessibilityLabel(L10n.format("Ver %@ ao vivo", control.name))
+            }
+        } else if let climate = control.climate {
             Button(intent: SetClimateWidgetPowerIntent(device: ClimateDeviceEntity(control), desired: !control.isOn)) { Image(systemName: "power") }
                 .buttonStyle(WidgetPowerButtonStyle(isOn: control.isOn))
                 .disabled(!ready || !(control.isOn ? climate.canPowerOff : climate.canPowerOn))

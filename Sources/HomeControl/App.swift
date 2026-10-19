@@ -17,6 +17,12 @@ struct HomeControlMain {
 final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowDelegate {
     private let store = HomeStore()
     private let updater = AppUpdater()
+    private lazy var cameras = CameraManager(store: store)
+    private var cameraWindow: NSWindow?
+    private var cameraSession: CameraLiveSession?
+    private var miniCameraWindow: MiniCameraWindow?
+    private var miniCameraSession: CameraLiveSession?
+    private var miniCameraID: String?
     private var statusItem: NSStatusItem!
     private var popover: NSPopover!
     private var previewWindow: NSWindow?
@@ -37,7 +43,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
             button.toolTip = L10n.text("HomeControl · sua casa a um clique")
             button.setAccessibilityLabel("HomeControl")
         }
-        let root = PanelView().environmentObject(store).environmentObject(updater)
+        let root = PanelView().environmentObject(store).environmentObject(updater).environmentObject(cameras)
             .environment(\.demoReduceMotion, demo && CommandLine.arguments.contains("--reduce-motion"))
         popover = NSPopover()
         popover.delegate = self
@@ -55,7 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
             window.isReleasedWhenClosed = false; window.delegate = self
             window.appearance = NSAppearance(named: .darkAqua)
             window.isOpaque = false; window.backgroundColor = .clear
-            window.contentViewController = NSHostingController(rootView: WidgetDemoView(single: single).environmentObject(store))
+            window.contentViewController = NSHostingController(rootView: WidgetDemoView(single: single, camerasPreview: CommandLine.arguments.contains("--camera-preview")).environmentObject(store).environmentObject(cameras))
             window.center(); window.makeKeyAndOrderFront(nil)
             previewWindow = window; updatePanelVisibility()
             NSApp.activate(ignoringOtherApps: true)
@@ -75,7 +81,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         } else if store.serverAddress.isEmpty || demo {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { self.showPopover() }
         }
-        controlCoordinator = HostControlCoordinator(store: store)
+        cameras.openViewer = { [weak self] id in self?.showMiniCamera(id: id) }
+        controlCoordinator = HostControlCoordinator(store: store, cameras: cameras)
 
     }
     @objc private func togglePopover() {
@@ -93,6 +100,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
     }
     func applicationWillTerminate(_ notification: Notification) {
         (controlCoordinator as? HostControlCoordinator)?.stop()
+        cameraSession?.stop(clear: true)
+        miniCameraSession?.stop(clear: true)
         store.stopConnection()
         if let wakeObserver { NSWorkspace.shared.notificationCenter.removeObserver(wakeObserver) }
     }
@@ -105,6 +114,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
     func windowDidMiniaturize(_ notification: Notification) { updatePanelVisibility() }
     func windowDidDeminiaturize(_ notification: Notification) { updatePanelVisibility() }
     func windowWillClose(_ notification: Notification) {
+        if let window = notification.object as? NSWindow, window === miniCameraWindow {
+            miniCameraSession?.stop(clear: true); miniCameraSession = nil; miniCameraWindow = nil; miniCameraID = nil
+        }
+        if let window = notification.object as? NSWindow, window === cameraWindow {
+            cameraSession?.stop(clear: true); cameraSession = nil; cameraWindow = nil
+        }
         store.isPanelVisible = popover?.isShown == true
         if CommandLine.arguments.contains("--widget-preview"),
            let window = notification.object as? NSWindow, window === previewWindow {
@@ -118,6 +133,79 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
             updater.start(enabled: true)
         }
     }
+    private func showCamera(id: String) {
+        guard let entity = store.cameraEntity(id: id) else { return }
+        cameraWindow?.close()
+        miniCameraWindow?.close()
+        let session = CameraLiveSession(cameras: cameras, id: id)
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 780, height: 540), styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
+        window.title = entity.name; window.minSize = NSSize(width: 540, height: 380)
+        window.appearance = NSAppearance(named: .darkAqua)
+        window.isReleasedWhenClosed = false; window.delegate = self
+        window.contentViewController = NSHostingController(rootView: CameraViewer(session: session, name: entity.name, room: store.areas[entity.id], makeMini: { [weak self] in self?.showMiniCamera(id: id) }).environmentObject(store))
+        cameraSession = session; cameraWindow = window
+        window.center(); window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    private func showMiniCamera(id: String) {
+        guard let entity = store.cameraEntity(id: id) else { return }
+        if miniCameraID == id, let window = miniCameraWindow {
+            window.orderFrontRegardless()
+            if miniCameraSession?.running == false { miniCameraSession?.start() }
+            return
+        }
+        miniCameraWindow?.close(); cameraWindow?.close()
+        let session = CameraLiveSession(cameras: cameras, id: id)
+        let window = MiniCameraWindow(contentRect: NSRect(x: 0, y: 0, width: 340, height: 191.25), styleMask: [.borderless, .resizable], backing: .buffered, defer: false)
+        window.title = L10n.format("Minicâmera · %@", entity.name)
+        window.minSize = NSSize(width: 240, height: 135); window.maxSize = NSSize(width: 1280, height: 720)
+        window.contentAspectRatio = NSSize(width: 16, height: 9)
+        window.isOpaque = false; window.backgroundColor = .clear; window.hasShadow = true
+        window.hidesOnDeactivate = false
+        // The image owns dragging; the control strip keeps its mouse events.
+        window.isMovableByWindowBackground = false
+        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        window.appearance = NSAppearance(named: .darkAqua)
+        window.isReleasedWhenClosed = false; window.delegate = self
+        let key = "cameraMini.alwaysOnTop"
+        let staysOnTop = UserDefaults.standard.object(forKey: key) as? Bool ?? true
+        window.level = staysOnTop ? .floating : .normal
+        let controller = NSHostingController(rootView: MiniCameraView(session: session, name: entity.name, staysOnTop: staysOnTop, changeLevel: { [weak window] value in
+                window?.level = value ? .floating : .normal
+                UserDefaults.standard.set(value, forKey: key)
+            },
+            resize: { [weak self] in self?.resizeMiniCamera() },
+            expand: { [weak self] in self?.showCamera(id: id) }, close: { [weak window] in window?.close() }).environmentObject(store))
+        controller.sizingOptions = []
+        window.contentViewController = controller
+        if let screen = NSScreen.main {
+            let visible = screen.visibleFrame
+            window.setFrameOrigin(NSPoint(x: visible.maxX - 364, y: visible.minY + 24))
+        }
+        if window.setFrameUsingName("HomeControlMiniCamera"),
+           !NSScreen.screens.contains(where: { $0.visibleFrame.intersects(window.frame) }) {
+            window.center()
+        }
+        window.setFrameAutosaveName("HomeControlMiniCamera")
+        miniCameraID = id; miniCameraSession = session; miniCameraWindow = window
+        popover.performClose(nil)
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    private func resizeMiniCamera() {
+        guard let window = miniCameraWindow, let screen = window.screen ?? NSScreen.main else { return }
+        let visible = screen.visibleFrame.insetBy(dx: 12, dy: 12)
+        let current = window.frame
+        let requested: CGFloat = current.width < 300 ? 340 : current.width < 400 ? 480 : 240
+        let width = min(requested, visible.width, visible.height * 16 / 9)
+        let height = width * 9 / 16
+        let x = max(visible.minX, min(current.maxX - width, visible.maxX - width))
+        let y = max(visible.minY, min(current.maxY - height, visible.maxY - height))
+        window.setFrame(NSRect(x: x, y: y, width: width, height: height), display: true)
+    }
+
     private func updatePanelVisibility() {
         let windowVisible = previewWindow.map { $0.isVisible && !$0.isMiniaturized && $0.occlusionState.contains(.visible) } ?? false
         store.isPanelVisible = popover?.isShown == true || windowVisible

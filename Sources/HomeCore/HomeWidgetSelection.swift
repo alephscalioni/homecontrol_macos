@@ -5,11 +5,13 @@ public enum HomeWidgetSelection {
     public static let limit = 4
 
     public static func supports(_ control: FavoriteControl) -> Bool {
-        control.kind == .toggle || control.kind == .scene || control.climate?.isSingleTarget == true
+        control.isCamera || control.kind == .toggle || control.kind == .scene || control.climate?.isSingleTarget == true
     }
 
     public static func typeName(for control: FavoriteControl) -> String {
         switch control.entityID.split(separator: ".").first {
+        case "camera": return L10n.text("Câmera")
+        case "vacuum": return L10n.text("Aspirador")
         case "light": return L10n.text("Luz")
         case "switch": return L10n.text("Interruptor ou tomada")
         case "fan": return L10n.text("Ventilador")
@@ -22,6 +24,8 @@ public enum HomeWidgetSelection {
     public static func matches(_ control: FavoriteControl, query: String) -> Bool {
         let aliases: String
         switch control.entityID.split(separator: ".").first {
+        case "camera": aliases = "camera cameras câmera câmeras vídeo video segurança security"
+        case "vacuum": aliases = "aspirador aspiradores robo robô vacuum robot cleaner"
         case "light": aliases = "luz luzes iluminação light lights lighting"
         case "switch": aliases = "interruptor interruptores tomada tomadas switch switches outlet outlets"
         case "fan": aliases = "ventilador ventiladores fan fans"

@@ -28,6 +28,7 @@ Each user connects their own Home Assistant instance. Credentials are stored loc
 
 - Signed software updates through the project GitHub Releases HTTPS feed. The repository includes the public endpoint and verification key; the private signing key stays outside the repository.
 - Detailed climate controls, plus lights, switches, fans, covers, and scenes.
+- Vacuum device view with map room selection, live map names, capability-driven cleaning controls, suction/mop settings, dock actions and grouped maintenance/technical details. Robot map IDs remain separate from Home Assistant areas.
 - Three labelled tabs: Ar-condicionado, Cômodos, Favoritos. One fixed-width menu-bar icon, without changing temperature text in the system bar.
 - Daily controls and environmental readings lead the room view. Consumption, schedules, maintenance, configuration, diagnostics and unknown readings are separate collapsed sections. Local, per-server classification/hiding overrides are reversible and do not modify HA entities.
 - Consumption retains the device, unit and supplied period; accumulated energy is separate from instantaneous power, with no synthetic aggregate totals.
@@ -40,7 +41,7 @@ Each user connects their own Home Assistant instance. Credentials are stored loc
 - Store access tokens in macOS Keychain, never in source or plain preferences.
 - Clearly identified demonstration data until connected; opening a preview must not send commands to a real home.
 - No locks, alarms, garage doors, or other security controls in the initial scope.
-- Desktop widgets: a configurable large widget with up to four ordered controls (lights, switches, fans, climate and scenes), plus a medium single-device widget using the same catalog. Selection belongs to each widget; removing an entity or changing accounts never selects a replacement. The single-device widget can select lights and scenes as well as climate; climate retains its temperature artwork, direct step adjustments and supported power actions. WidgetKit reads display-only shared data; credential access and service execution stay in the host process. Included in release 0.4.0.
+- Desktop widgets: a configurable large widget with up to four ordered controls (lights, switches, fans, climate, cameras and scenes), plus a medium single-device widget using the same catalog. Selection belongs to each widget; removing an entity or changing accounts never selects a replacement. The single-device widget can select lights and scenes as well as climate; climate retains its temperature artwork, direct step adjustments and supported power actions. WidgetKit reads display-only shared data; credential access and service execution stay in the host process. Included in release 0.4.0.
 
 ## Brand Commitments
 
@@ -56,3 +57,5 @@ Demonstration rooms, entities and readings are synthetic and explicitly labelled
 - The server remains the source of truth for device states.
 - Unsupported capabilities never appear as working controls.
 - Keep setup and failures understandable without exposing implementation details.
+
+Camera widgets show private snapshots with capture times. Continuous video uses a separate borderless mini camera app window, with hover controls, resizing, pause, an always-on-top option, and an expanded view. It does not pretend to be a live WidgetKit timeline. Closing or changing connections cancels the stream.

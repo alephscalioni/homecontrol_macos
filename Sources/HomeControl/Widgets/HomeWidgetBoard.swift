@@ -1,5 +1,6 @@
 import HomeCore
 import SwiftUI
+import WidgetKit
 
 struct HomeWidgetItem: Identifiable {
     let id: String
@@ -58,10 +59,15 @@ struct HomeWidgetBoard<Content: View>: View {
 struct HomeWidgetTile<Power: View, Adjustments: View>: View {
     let item: HomeWidgetItem
     let connected: Bool
+    var camera: CameraSnapshot?
+    var demo = false
     @ViewBuilder let power: () -> Power
     @ViewBuilder let adjustments: () -> Adjustments
 
     var body: some View {
+        if let control = item.control, control.isCamera {
+            CameraWidgetCard(control: control, connected: connected, snapshot: camera, compact: true, demo: demo, actions: power)
+        } else {
         VStack(alignment: .leading, spacing: 4) {
             if let control = item.control {
                 HStack(spacing: 6) {
@@ -98,17 +104,19 @@ struct HomeWidgetTile<Power: View, Adjustments: View>: View {
             }
         }.padding(12).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(.white.opacity(item.control?.isOn == true && connected ? 0.11 : 0.055), in: RoundedRectangle(cornerRadius: 14))
+        }
     }
 }
 
 struct HomeWidgetActionStyle: ButtonStyle {
     let active: Bool
+    @Environment(\.widgetRenderingMode) private var renderingMode
     @Environment(\.isEnabled) private var enabled
     func makeBody(configuration: Configuration) -> some View {
         configuration.label.font(.system(size: 12, weight: .semibold)).lineLimit(1)
             .padding(.horizontal, 10).frame(height: 30)
-            .foregroundStyle((active ? WidgetInk.background : WidgetInk.text).opacity(enabled ? 1 : 0.35))
-            .background((active ? WidgetInk.accent : .white.opacity(0.12)).opacity(configuration.isPressed ? 0.65 : 1), in: RoundedRectangle(cornerRadius: 9))
+            .foregroundStyle((active && renderingMode == .fullColor ? WidgetInk.background : WidgetInk.text).opacity(enabled ? 1 : 0.35))
+            .background((active && renderingMode == .fullColor ? WidgetInk.accent : .white.opacity(active ? 0.24 : 0.12)).opacity(configuration.isPressed ? 0.65 : 1), in: RoundedRectangle(cornerRadius: 9))
             .contentShape(RoundedRectangle(cornerRadius: 9))
     }
 }

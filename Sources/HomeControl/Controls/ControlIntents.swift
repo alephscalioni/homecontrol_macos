@@ -59,7 +59,7 @@ struct SelectSceneFavoriteIntent: ControlConfigurationIntent {
 @available(macOS 14.0, *)
 @MainActor
 enum ControlIntentBridge {
-    enum Action { case power(String, Bool), activate(String), temperature(String, Int), widgetPower(String, Bool), homeWidget(String, Bool?) }
+    enum Action { case power(String, Bool), activate(String), temperature(String, Int), widgetPower(String, Bool), homeWidget(String, Bool?), refreshCamera(String), openCamera(String) }
     static var handler: ((Action) async throws -> Void)?
     static func perform(_ action: Action) async throws {
         guard let handler else { throw ControlIntentError.openApp }

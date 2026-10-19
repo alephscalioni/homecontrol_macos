@@ -14,7 +14,7 @@ struct PanelView: View {
                 ScrollView {
                     if store.category == .rooms {
                         RoomsView()
-                    } else if [.climate, .lights, .fans, .covers].contains(store.category), let entity = store.selected {
+                    } else if [.climate, .lights, .fans, .covers, .cameras, .vacuums].contains(store.category), let entity = store.selected {
                         VStack(spacing: 12) {
                             if store.category == .climate && !store.detailFromRoom && !store.detailFromFavorites && store.filtered.count > 1 {
                                 Picker(L10n.text("Ar-condicionado"), selection: Binding(get: { store.selected?.id ?? "" }, set: { store.selection[.climate] = $0 })) {
@@ -23,7 +23,7 @@ struct PanelView: View {
                             }
                             deviceHeader(entity)
                             DeviceDetail(entity: entity)
-                                .disabled(!store.canControl || !entity.available || store.pendingEntities.contains(entity.id))
+                                .disabled(entity.domain != "vacuum" && (!store.canControl || !entity.available || store.pendingEntities.contains(entity.id)))
                             if !entity.available {
                                 Text(L10n.text("Aparelho indisponível no Home Assistant.")).font(.system(size: 12)).foregroundStyle(Palette.warning)
                             }
@@ -105,7 +105,7 @@ struct PanelView: View {
                 IconButton(icon: "chevron.left", label: store.detailFromFavorites ? L10n.text("Voltar aos favoritos") : L10n.text("Voltar ao cômodo"), size: 28) { store.returnToRoom() }
             }
             VStack(alignment: .leading, spacing: 5) {
-                Text(entity.name).font(.system(size: 15, weight: .semibold)).lineLimit(2)
+                Text(entity.domain == "vacuum" ? store.deviceName(for: entity) ?? entity.name : entity.name).font(.system(size: 15, weight: .semibold)).lineLimit(2)
                 HStack(spacing: 5) {
                     if let room = store.areas[entity.id] { Text(room) }
                     if entity.domain == "climate" {

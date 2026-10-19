@@ -73,3 +73,35 @@ struct ActivateHomeWidgetSceneIntent: AppIntent {
 extension SetHomeWidgetPowerIntent: ForegroundContinuableIntent {}
 @available(macOSApplicationExtension, unavailable)
 extension ActivateHomeWidgetSceneIntent: ForegroundContinuableIntent {}
+
+struct RefreshCameraWidgetIntent: AppIntent {
+    static var title: LocalizedStringResource = "Refresh camera image"
+    static var isDiscoverable = false
+    static var openAppWhenRun = false
+    @Parameter(title: "Home control") var device: HomeWidgetEntity
+    init() {}
+    init(device: HomeWidgetEntity) { self.device = device }
+    func perform() async throws -> some IntentResult {
+        try await ControlIntentBridge.perform(.refreshCamera(device.id))
+        return .result()
+    }
+}
+
+struct OpenCameraViewerIntent: AppIntent {
+    static var title: LocalizedStringResource = "View camera live"
+    static var isDiscoverable = false
+    static var openAppWhenRun = true
+    @Parameter(title: "Home control") var device: HomeWidgetEntity
+    init() {}
+    init(device: HomeWidgetEntity) { self.device = device }
+    func perform() async throws -> some IntentResult {
+        try await ControlIntentBridge.perform(.openCamera(device.id))
+        return .result()
+    }
+}
+
+@available(macOSApplicationExtension, unavailable)
+extension RefreshCameraWidgetIntent: ForegroundContinuableIntent {}
+
+@available(macOSApplicationExtension, unavailable)
+extension OpenCameraViewerIntent: ForegroundContinuableIntent {}

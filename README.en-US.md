@@ -6,6 +6,8 @@ Control your Home Assistant devices from your Mac’s menu bar. Adjust the air c
 
 The app follows your Mac’s language, with US English and Brazilian Portuguese. Your device and room names stay exactly as you set them in Home Assistant.
 
+Vacuum: select map rooms, adjust suction, cleaning mode and mop water, and control dock emptying, washing and drying. Room names follow changes received by Home Assistant.
+
 ## Install
 
 Requires a Mac with Apple Silicon (M1 or later) and macOS 14 or later. Your Home Assistant must already be set up and reachable from your Mac.
@@ -33,10 +35,10 @@ Your devices and rooms appear after connecting. You do not need to install an ad
 The app has three tabs:
 
 - **Air conditioning:** choose a room and adjust the temperature, mode, fan speed, and airflow. Drag the temperature slider and release to confirm, or use **−** and **+**. The airflow animation follows the fan speed reported by your device.
-- **Rooms:** open a room to access lights, outlets, switches, blinds, fans, and sensor readings. Click a device’s name to open its details.
+- **Rooms:** open a room to access lights, outlets, switches, blinds, fans, cameras, and sensor readings. Click a device’s name to open its details.
 - **Favorites:** keep your most-used items together. Click an item’s star to add or remove it.
 
-Available options depend on each device’s capabilities. RGB lights support on/off and brightness. Color selection, cameras, media players, locks, and alarms do not yet have controls in the app.
+Available options depend on each device’s capabilities. RGB lights support on/off and brightness. Color selection, media players, locks, and alarms do not yet have controls in the app.
 
 ## Organize your home
 
@@ -50,12 +52,20 @@ Use **Organize** to change an item’s classification or hide it. You can restor
 
 Keep HomeControl open and connected. Right-click the desktop, choose **Edit Widgets**, and search for **HomeControl**.
 
-- **One device:** choose a light, outlet, switch, fan, air conditioner, or scene. Air conditioners retain the **−/+** temperature buttons when supported.
+- **One device:** choose a light, outlet, switch, fan, air conditioner, camera, or scene. Air conditioners retain the **−/+** temperature buttons when supported.
 - **Up to 4 controls:** mix up to four items and choose their order.
 
 To change items later, right-click the widget itself, choose **Edit**, and change **Device** or **Items**. Search by name, room, or type, such as “lights”. You do not need to mark an item as a favorite to use it in a widget.
 
 Unavailable devices have disabled controls. If an item is removed or you change connections, choose it again in the widget editor.
+
+## Cameras
+
+Open a camera in **Rooms** or **Favorites** to check a snapshot. Click **Watch live** to open a mini camera without a title bar. Drag the image to move it. Hover or focus the mini camera to reveal pause, always on top, size, expand, and close controls. The size button cycles through small, medium, and large. The expanded window also has a button to return to the mini camera. Closing the window stops the stream.
+
+Choose a camera in either widget just like any other item. **Refresh** gets a new image; **Expand** opens the stream in the app. The displayed time is the capture time. Widgets show snapshots without continuous video. HomeControl fetches new snapshots for selected cameras while open and connected; macOS decides when to redraw the widget.
+
+The camera must provide a compatible image and stream through Home Assistant. Quality, smoothness, and delay depend on the integration and network. Audio, recording, and camera movement do not have controls in the app. Captures stay in private local storage and are cleared when you quit or change connections. The token stays in the app and is not shared with widgets.
 
 ## Favorites in Control Center
 

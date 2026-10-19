@@ -46,7 +46,9 @@ public struct HAEntity: Codable, Identifiable, Equatable, Sendable {
     public var id: String { entityID }
     public var domain: String { String(entityID.split(separator: ".").first ?? "") }
     public var name: String { attributes["friendly_name"]?.string ?? entityID }
-    public var available: Bool { !["unavailable", "unknown"].contains(state) }
+    public var available: Bool {
+        state != "unavailable" && (state != "unknown" || ["button", "notify"].contains(domain))
+    }
     public var isOn: Bool { available && !["off", "closed", "standby"].contains(state) }
     public func number(_ key: String) -> Double? { attributes[key]?.number }
     public func text(_ key: String) -> String? { attributes[key]?.string }
@@ -67,7 +69,7 @@ public struct HAEntity: Codable, Identifiable, Equatable, Sendable {
         domain == "cover" && !["garage", "gate", "door"].contains(text("device_class") ?? "")
     }
     public var isSupported: Bool {
-        ["climate", "light", "switch", "fan", "scene", "sensor", "binary_sensor"].contains(domain) || isSafeCover
+        ["climate", "light", "switch", "fan", "scene", "sensor", "binary_sensor", "camera", "vacuum"].contains(domain) || isSafeCover
     }
     public var timestamp: Date? { Self.date(lastUpdated) }
     public static func date(_ value: String?) -> Date? {

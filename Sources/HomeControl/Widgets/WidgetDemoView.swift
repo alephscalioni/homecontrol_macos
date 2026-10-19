@@ -3,12 +3,13 @@ import SwiftUI
 
 struct WidgetDemoView: View {
     @EnvironmentObject private var store: HomeStore
+    @EnvironmentObject private var cameras: CameraManager
     var single = false
     @State private var selectedIDs: [String]
-    init(single: Bool = false) {
+    init(single: Bool = false, camerasPreview: Bool = false) {
         self.single = single
-        let defaults = single ? ["climate.quarto"] : ["climate.quarto", "light.sala", "switch.cafeteira", "scene.boa_noite"]
-        let saved = UserDefaults.standard.stringArray(forKey: single ? "widgetPreview.item.demo" : "widgetPreview.items.demo") ?? defaults
+        let defaults = camerasPreview ? (single ? ["camera.entrada_demo"] : ["camera.entrada_demo", "camera.jardim_demo", "climate.quarto", "light.sala"]) : single ? ["climate.quarto"] : ["climate.quarto", "light.sala", "switch.cafeteira", "scene.boa_noite"]
+        let saved = camerasPreview ? defaults : UserDefaults.standard.stringArray(forKey: single ? "widgetPreview.item.demo" : "widgetPreview.items.demo") ?? defaults
         _selectedIDs = State(initialValue: Array(HomeWidgetSelection.identifiers(saved).prefix(single ? 1 : 4)))
     }
     private var limit: Int { single ? 1 : 4 }
@@ -45,6 +46,9 @@ struct WidgetDemoView: View {
             .alert(L10n.text("Não foi possível enviar o comando"), isPresented: Binding(get: { commandError != nil }, set: { if !$0 { commandError = nil } })) {
                 Button("OK", role: .cancel) {}
             } message: { Text(commandError ?? "") }
+            .task(id: selectedIDs) {
+                for item in items where item.control?.isCamera == true { _ = try? await cameras.refresh(id: item.id) }
+            }
             .onChange(of: selectedIDs) { _, value in
                 UserDefaults.standard.set(value, forKey: single ? "widgetPreview.item.demo" : "widgetPreview.items.demo")
                 activatedScene = nil
@@ -53,12 +57,12 @@ struct WidgetDemoView: View {
 
     @ViewBuilder private var previewContent: some View {
         if single, let item = items.first, let control = item.control {
-            SingleDeviceWidgetCard(control: control, connected: true, demo: true, showsEditHint: false) {
+            SingleDeviceWidgetCard(control: control, connected: true, demo: true, showsEditHint: false, camera: cameras.images[control.id]) {
                 power(for: item)
             } adjustments: { adjustments(for: item, compact: false) }
         } else {
             HomeWidgetBoard(items: items, connected: true, demo: true) { item in
-                HomeWidgetTile(item: item, connected: true) { power(for: item) }
+                HomeWidgetTile(item: item, connected: true, camera: cameras.images[item.id], demo: true) { power(for: item) }
                     adjustments: { adjustments(for: item, compact: true) }
             }
         }
@@ -68,7 +72,16 @@ struct WidgetDemoView: View {
 
         if let control = item.control, let entity = store.entities.first(where: { $0.id == control.entityID }) {
             let pending = store.pendingEntities.contains(entity.id)
-            if let climate = control.climate {
+            if control.isCamera {
+                HStack(spacing: 4) {
+                    Button { perform(.refreshCamera(control.id)) } label: { Image(systemName: "arrow.clockwise") }
+                        .buttonStyle(WidgetTemperatureButtonStyle(width: 28)).disabled(cameras.pending.contains(control.id))
+                        .accessibilityLabel(L10n.format("Atualizar imagem de %@", control.name))
+                    Button { perform(.openCamera(control.id)) } label: { Image(systemName: "arrow.up.left.and.arrow.down.right") }
+                        .buttonStyle(WidgetTemperatureButtonStyle(width: 28))
+                        .accessibilityLabel(L10n.format("Ver %@ ao vivo", control.name))
+                }
+            } else if let climate = control.climate {
                 Button { perform(control.climate != nil ? .widgetPower(control.id, !entity.isOn) : .homeWidget(control.id, !entity.isOn)) } label: { Image(systemName: "power") }
                     .buttonStyle(WidgetPowerButtonStyle(isOn: entity.isOn))
                     .disabled(pending || !(entity.isOn ? climate.canPowerOff : climate.canPowerOn))

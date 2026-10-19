@@ -15,6 +15,7 @@ public struct FavoriteControl: Codable, Equatable, Identifiable, Sendable {
     public let available: Bool
     public let kind: FavoriteControlKind
     public let climate: ClimateWidgetState?
+    public var isCamera: Bool { entityID.hasPrefix("camera.") }
 
     public init(entity: HAEntity, serverID: String, room: String? = nil) {
         // Escape the separator (and escape character) so arbitrary identities cannot collide.
@@ -27,9 +28,13 @@ public struct FavoriteControl: Codable, Equatable, Identifiable, Sendable {
         name = entity.name
         self.room = room
         isOn = entity.isOn
-        available = entity.available
+        available = entity.available && (entity.domain != "camera" || entity.state != "off")
         climate = entity.domain == "climate" ? ClimateWidgetState(entity: entity) : nil
-        if entity.domain == "scene" {
+        if entity.domain == "camera" {
+            // Keep the shared wire format readable by an extension from an older build.
+            // Camera identity comes from the entity domain, never a new power action.
+            kind = .open
+        } else if entity.domain == "scene" {
             kind = .scene
         } else if FavoritePower.supports(entity, isOn: true)
                     && FavoritePower.supports(entity, isOn: false) {
@@ -38,6 +43,8 @@ public struct FavoriteControl: Codable, Equatable, Identifiable, Sendable {
             kind = .open
         }
         switch entity.domain {
+        case "camera": symbol = "video.fill"
+        case "vacuum": symbol = "robotic.vacuum"
         case "light": symbol = "lightbulb.fill"
         case "switch": symbol = "power"
         case "fan": symbol = "fan.fill"

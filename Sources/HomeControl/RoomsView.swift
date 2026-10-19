@@ -86,7 +86,7 @@ struct RoomsView: View {
     }
     private func roomRow(scope: RoomScope, name: String, icon: String) -> some View {
         let count = store.everydayItems(in: scope).count
-        let additional = store.items(in: scope).filter { !store.isHidden($0) && !store.purpose(of: $0).isEveryday }.count
+        let additional = store.consolidatedItems(store.items(in: scope)).filter { !store.purpose(of: $0).isEveryday }.count
         return Button { store.roomScope = scope } label: {
             HStack(spacing: 13) {
                 Image(systemName: icon).font(.system(size: 23, weight: .light)).foregroundStyle(Palette.accent).frame(width: 30)

@@ -23,6 +23,18 @@
 			"path" = "Sources/HomeControl/AppUpdater.swift";
 			"sourceTree" = "SOURCE_ROOT";
 		};
+		"536203615B62ECA25B4F6631" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "Sources/HomeControl/CameraManager.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"77B372DD66407FA73371BAA1" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "Sources/HomeControl/CameraViews.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
 		"13569B60BC830C29EC1769AD" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
@@ -59,6 +71,12 @@
 			"path" = "Sources/HomeControl/HomeStore.swift";
 			"sourceTree" = "SOURCE_ROOT";
 		};
+		"99C6E4877147FAE33761BEBB" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "Sources/HomeControl/MiniCameraView.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
 		"22CAF81B71FABA7168CC1788" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
@@ -87,6 +105,18 @@
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
 			"path" = "Sources/HomeControl/Theme.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"F43DA63C67A5679E4B6864A7" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "Sources/HomeControl/VacuumView.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"DB58411EDF43DD79486F0E5F" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "Sources/HomeControl/Widgets/CameraWidgetCard.swift";
 			"sourceTree" = "SOURCE_ROOT";
 		};
 		"25C1F9CB04A7B379A4901DE7" = {
@@ -251,6 +281,14 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "D559C643D402D09420A5C252";
 		};
+		"D049AD51EF118A4A7C28BCC5" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "536203615B62ECA25B4F6631";
+		};
+		"EC47418A9128720B3BFD6E5D" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "77B372DD66407FA73371BAA1";
+		};
 		"6DFCF3ACB10CA8F10F820D2A" = {
 			"isa" = "PBXBuildFile";
 			"fileRef" = "13569B60BC830C29EC1769AD";
@@ -275,6 +313,10 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "AD79CF3AEB99E034ECD33C1F";
 		};
+		"FB866222FF0A6AA4BF597622" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "99C6E4877147FAE33761BEBB";
+		};
 		"9C92ACD9089CDE1A64D1EDA6" = {
 			"isa" = "PBXBuildFile";
 			"fileRef" = "22CAF81B71FABA7168CC1788";
@@ -294,6 +336,14 @@
 		"6BE6761F8C04F51CEAFF9951" = {
 			"isa" = "PBXBuildFile";
 			"fileRef" = "FE2E5BB29A43112B498126AE";
+		};
+		"A2D95D2FD1B7ECD539EC3D15" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "F43DA63C67A5679E4B6864A7";
+		};
+		"61EE4580FC420E9D983D0E34" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "DB58411EDF43DD79486F0E5F";
 		};
 		"0E6334AE508B09D8515391EE" = {
 			"isa" = "PBXBuildFile";
@@ -330,17 +380,22 @@
 				"359C90395B1F86DB547BB6AA",
 				"B6BCED9EAA9B2F74A12D24D9",
 				"7E6DE7AFF1E0B1B82DCF6015",
+				"D049AD51EF118A4A7C28BCC5",
+				"EC47418A9128720B3BFD6E5D",
 				"6DFCF3ACB10CA8F10F820D2A",
 				"01057DE2AA808FC69748F6FA",
 				"0C7F08A4BE15F113027AC84C",
 				"3C68564294DC249C5946CE34",
 				"C002FE10854176EE4B463C3A",
 				"23502F2E3E55F0E4C30EEB31",
+				"FB866222FF0A6AA4BF597622",
 				"9C92ACD9089CDE1A64D1EDA6",
 				"E91619DE3939618F06A3D58A",
 				"B92EDB61399513A220EEFF4A",
 				"5D24F6A699E949172C049977",
 				"6BE6761F8C04F51CEAFF9951",
+				"A2D95D2FD1B7ECD539EC3D15",
+				"61EE4580FC420E9D983D0E34",
 				"0E6334AE508B09D8515391EE",
 				"337FF140662373E0FA41AA41",
 				"B1521AA2A8A7D738DE6893F8",
@@ -375,6 +430,10 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "EF397427E65E27D47B364204";
 		};
+		"0266AA3580C7C00C3BB75F6F" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "DB58411EDF43DD79486F0E5F";
+		};
 		"4A4400990FA2A695233B8FB5" = {
 			"isa" = "PBXBuildFile";
 			"fileRef" = "A1D413D43DB0095FC5113860";
@@ -401,6 +460,7 @@
 				"A96CEA945745FE1EF7E9DC39",
 				"E62BC0060FC6685765BD208F",
 				"FEFC3A6E2D241D4BF553B7E9",
+				"0266AA3580C7C00C3BB75F6F",
 				"4A4400990FA2A695233B8FB5",
 				"B396512098890EEDCC0AC35D",
 				"B3728074058D75ED409E2280",
@@ -509,8 +569,8 @@
 				"CODE_SIGNING_ALLOWED" = "NO";
 				"HOME_CONTROL_BUNDLE_ID" = "br.com.homecontrol.mac";
 				"HOME_CONTROL_APP_GROUP" = "";
-				"MARKETING_VERSION" = "0.4.0";
-				"CURRENT_PROJECT_VERSION" = "9";
+				"MARKETING_VERSION" = "0.5.0";
+				"CURRENT_PROJECT_VERSION" = "12";
 				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
 				"DEBUG_INFORMATION_FORMAT" = "dwarf";
 				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "DEBUG $(inherited)";
@@ -529,8 +589,8 @@
 				"CODE_SIGNING_ALLOWED" = "NO";
 				"HOME_CONTROL_BUNDLE_ID" = "br.com.homecontrol.mac";
 				"HOME_CONTROL_APP_GROUP" = "";
-				"MARKETING_VERSION" = "0.4.0";
-				"CURRENT_PROJECT_VERSION" = "9";
+				"MARKETING_VERSION" = "0.5.0";
+				"CURRENT_PROJECT_VERSION" = "12";
 				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
 				"DEBUG_INFORMATION_FORMAT" = "dwarf-with-dsym";
 			};
@@ -725,17 +785,22 @@
 				"D17B24E2FF2BF65396803AB8",
 				"9ECD85559518508911305038",
 				"D559C643D402D09420A5C252",
+				"536203615B62ECA25B4F6631",
+				"77B372DD66407FA73371BAA1",
 				"13569B60BC830C29EC1769AD",
 				"ABBECDCC2B3FB075572E7658",
 				"4A6E585CDB3B4A902474FF4C",
 				"86F45717FE9CFAB38D1D304D",
 				"5DA6FB77985A79040B3F8AF0",
 				"AD79CF3AEB99E034ECD33C1F",
+				"99C6E4877147FAE33761BEBB",
 				"22CAF81B71FABA7168CC1788",
 				"D9E06C2DA485D19E5A284502",
 				"AD14A3DA12F1F3B8230CF317",
 				"F918FD948181298C21BAED72",
 				"FE2E5BB29A43112B498126AE",
+				"F43DA63C67A5679E4B6864A7",
+				"DB58411EDF43DD79486F0E5F",
 				"25C1F9CB04A7B379A4901DE7",
 				"08F215695E6786F491A0A2CA",
 				"136AF9265061FDA5D6D4FC62",

@@ -7,10 +7,14 @@ public struct ControlSharedStore {
     public init(directory: URL) { url = directory.appendingPathComponent("favorites.json") }
 
     public static func configured(bundle: Bundle = .main) -> ControlSharedStore? {
+        configuredDirectory(bundle: bundle).map(ControlSharedStore.init)
+    }
+
+    public static func configuredDirectory(bundle: Bundle = .main) -> URL? {
         guard let group = bundle.object(forInfoDictionaryKey: "HomeControlAppGroup") as? String,
               !group.isEmpty, !group.contains("$("),
               let directory = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: group) else { return nil }
-        return ControlSharedStore(directory: directory)
+        return directory
     }
 
     public func read() throws -> FavoriteControlSnapshot {

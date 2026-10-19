@@ -11,7 +11,7 @@ struct HomeClimateWidget: Widget {
                 .containerBackground(for: .widget) { WidgetInk.background }
         }
         .configurationDisplayName("One device")
-        .description("Choose a light, switch, air conditioner, fan or scene.")
+        .description("Choose a light, switch, air conditioner, fan, camera or scene.")
         .supportedFamilies([.systemMedium])
         .contentMarginsDisabled()
     }

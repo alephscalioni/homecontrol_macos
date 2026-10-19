@@ -14,10 +14,13 @@ struct SingleDeviceWidgetCard<Power: View, Adjustments: View>: View {
     let connected: Bool
     var demo = false
     var showsEditHint = true
+    var camera: CameraSnapshot?
     @ViewBuilder let power: () -> Power
     @ViewBuilder let adjustments: () -> Adjustments
     var body: some View {
-        if control.climate?.isSingleTarget == true {
+        if control.isCamera {
+            CameraWidgetCard(control: control, connected: connected, snapshot: camera, demo: demo, showsEditHint: showsEditHint, actions: power)
+        } else if control.climate?.isSingleTarget == true {
             ClimateWidgetCard(favorite: control, connected: connected, demo: demo, showsEditHint: showsEditHint,
                               power: power, adjustments: adjustments)
         } else {

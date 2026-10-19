@@ -10,7 +10,7 @@ struct HomeControlsWidget: Widget {
             HomeWidgetEntryView(entry: entry).containerBackground(for: .widget) { WidgetInk.background }
         }
         .configurationDisplayName("Up to 4 controls")
-        .description("Choose up to four lights, switches, air conditioners or scenes.")
+        .description("Choose up to four lights, switches, air conditioners, cameras or scenes.")
         .supportedFamilies([.systemLarge])
         .contentMarginsDisabled()
     }

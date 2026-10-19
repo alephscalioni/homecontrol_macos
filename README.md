@@ -6,6 +6,8 @@ Controle os dispositivos do seu Home Assistant pela barra de menus do Mac. Ajust
 
 O app acompanha o idioma do Mac, com português do Brasil e inglês dos Estados Unidos. Os nomes dos seus aparelhos e cômodos permanecem como você cadastrou no Home Assistant.
 
+Aspirador: escolha cômodos do mapa, ajuste sucção, modo e água no pano, e controle esvaziamento, lavagem e secagem da base. Os nomes acompanham as mudanças recebidas pelo Home Assistant.
+
 ## Instalação
 
 Requer um Mac com Apple Silicon (M1 ou posterior) e macOS 14 ou superior. Seu Home Assistant precisa estar configurado e acessível pelo Mac.
@@ -33,10 +35,10 @@ Seus dispositivos e cômodos aparecerão após a conexão. Não é necessário i
 O app tem três abas:
 
 - **Ar-condicionado:** escolha o cômodo e ajuste a temperatura, o modo, a velocidade e a direção do ar. Arraste a barra de temperatura e solte para confirmar, ou use os botões **−** e **+**. A animação do vento acompanha a velocidade do ventilador informada pelo aparelho.
-- **Cômodos:** abra um ambiente para acessar luzes, tomadas, interruptores, cortinas, ventiladores e leituras dos sensores. Clique no nome de um aparelho para abrir seus detalhes.
+- **Cômodos:** abra um ambiente para acessar luzes, tomadas, interruptores, cortinas, ventiladores, câmeras e leituras dos sensores. Clique no nome de um aparelho para abrir seus detalhes.
 - **Favoritos:** reúna os itens que você usa com mais frequência. Para adicionar ou remover um favorito, clique na estrela do item.
 
-As opções disponíveis dependem dos recursos de cada aparelho. É possível ligar, desligar e ajustar o brilho de luzes RGB. A escolha de cores, câmeras, multimídia, fechaduras e alarmes ainda não têm controles no app.
+As opções disponíveis dependem dos recursos de cada aparelho. É possível ligar, desligar e ajustar o brilho de luzes RGB. A escolha de cores, multimídia, fechaduras e alarmes ainda não têm controles no app.
 
 ## Organizar sua casa
 
@@ -50,12 +52,20 @@ Use **Organizar** para mudar a classificação de um item ou ocultá-lo. É poss
 
 Mantenha o HomeControl aberto e conectado. Clique com o botão direito na Mesa, escolha **Editar Widgets** e procure **HomeControl**.
 
-- **Um aparelho:** escolha uma luz, tomada, interruptor, ventilador, ar-condicionado ou cena. O ar mantém os botões de temperatura **−/+** quando oferece esse ajuste.
+- **Um aparelho:** escolha uma luz, tomada, interruptor, ventilador, ar-condicionado, câmera ou cena. O ar mantém os botões de temperatura **−/+** quando oferece esse ajuste.
 - **Até 4 controles:** misture até quatro itens e escolha a ordem em que aparecem.
 
 Para trocar os itens depois, clique com o botão direito no próprio widget, escolha **Editar** e altere **Aparelho** ou **Itens**. A busca aceita nome, cômodo e tipo, como “luzes”. Não é necessário marcar um item como favorito para usá-lo no widget.
 
 Aparelhos indisponíveis ficam com os controles desativados. Se um item for removido ou você trocar de conexão, escolha-o novamente na edição do widget.
+
+## Câmeras
+
+Abra a câmera em **Cômodos** ou **Favoritos** para conferir uma imagem. Clique em **Ver ao vivo** para abrir uma minicâmera sem barra de título. Arraste a imagem para movê-la. Ao passar o mouse ou focar a minicâmera, aparecem os botões de pausa, sempre por cima, tamanho, ampliar e fechar. O botão de tamanho alterna entre pequeno, médio e grande. A janela ampliada também tem um botão para voltar à minicâmera. Fechar a janela encerra a transmissão.
+
+Nos widgets, escolha a câmera como qualquer outro item. O botão **Atualizar** busca uma nova imagem; **Ampliar** abre a transmissão no app. A hora exibida é a da captura. O widget mostra imagens, sem vídeo contínuo. O HomeControl busca novas capturas para as câmeras escolhidas enquanto está aberto e conectado; o macOS decide quando redesenhar o widget.
+
+A câmera precisa fornecer imagem e transmissão compatíveis pelo Home Assistant. Qualidade, fluidez e atraso dependem da integração e da rede. Áudio, gravação e movimento da câmera não têm controles no app. As capturas ficam no armazenamento local privado e são apagadas ao encerrar ou trocar a conexão. O token permanece no app e não é compartilhado com os widgets.
 
 ## Favoritos na Central de Controle
 

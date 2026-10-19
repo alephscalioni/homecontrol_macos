@@ -67,7 +67,7 @@ struct SetupView: View {
                 }.buttonStyle(.plain).foregroundStyle(Palette.secondary)
                 if !store.serverAddress.isEmpty {
                     HStack {
-                        Text(store.entities.count == 1 ? L10n.text("1 dispositivo compatível") : L10n.format("%ld dispositivos compatíveis", store.entities.count)).font(.system(size: 10)).foregroundStyle(Palette.secondary)
+                        Text(store.compatibleItemCount == 1 ? L10n.text("1 dispositivo compatível") : L10n.format("%ld dispositivos compatíveis", store.compatibleItemCount)).font(.system(size: 10)).foregroundStyle(Palette.secondary)
                         Spacer()
                         Button(L10n.text("Esquecer conexão")) { store.forgetConnection(); token = ""; address = "" }.font(.system(size: 10)).buttonStyle(.plain).foregroundStyle(Palette.secondary)
                     }

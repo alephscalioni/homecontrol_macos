@@ -3,6 +3,16 @@ import HomeCore
 
 enum DemoHome {
     static let entities: [HAEntity] = [
+        HAEntity("vacuum.robot_demo", state: "docked", attributes: ["friendly_name": .string(L10n.text("Aspirador robô")), "supported_features": .number(12828)]),
+        HAEntity("sensor.robot_demo_battery_level", state: "86", attributes: ["friendly_name": .string(L10n.text("Bateria")), "device_class": .string("battery"), "unit_of_measurement": .string("%")]),
+        HAEntity("sensor.robot_demo_room_information", state: "{\"map_uid\":1,\"rooms\":[{\"id\":1,\"name\":\"Library\"},{\"id\":2,\"name\":\"Studio\"}]}", attributes: [:]),
+        HAEntity("select.robot_demo_suction", state: "Standard", attributes: ["friendly_name": .string(L10n.text("Sucção")), "options": .strings(["Silent", "Standard", "Strong", "Turbo"])]),
+        HAEntity("select.robot_demo_sweep_mop_type", state: "Vacuuming", attributes: ["friendly_name": .string(L10n.text("Modo de limpeza")), "options": .strings(["Vacuuming", "Mopping", "Vacuuming & Mopping"])]),
+        HAEntity("select.robot_demo_mop_water_output_level", state: "Level 1", attributes: ["friendly_name": .string(L10n.text("Água no pano")), "options": .strings(["Off", "Level 1", "Level 2", "Level 3"])]),
+        HAEntity("button.robot_demo_start_dust_arrest", state: "unknown", attributes: ["friendly_name": .string(L10n.text("Esvaziar pó"))]),
+        HAEntity("notify.robot_demo_start_vacuum_room_sweep", state: "unknown", attributes: ["action params": .string("[Vacuum Room IDs(str)]")]),
+        HAEntity("camera.entrada_demo", state: "idle", attributes: ["friendly_name": .string(L10n.text("Câmera da entrada"))]),
+        HAEntity("camera.jardim_demo", state: "idle", attributes: ["friendly_name": .string(L10n.text("Câmera do jardim"))]),
         HAEntity("climate.quarto", state: "cool", attributes: [
             "friendly_name": .string(L10n.text("Ar-condicionado do quarto")), "temperature": .number(21),
             "current_temperature": .number(23), "temperature_unit": .string("°C"),
@@ -40,6 +50,7 @@ enum DemoHome {
         HAEntity("binary_sensor.janela", state: "off", attributes: ["friendly_name": .string(L10n.text("Janela da sala")), "device_class": .string("window")])
     ]
     static let areas = [
+        "camera.entrada_demo": L10n.text("Entrada"), "camera.jardim_demo": L10n.text("Jardim"),
         "climate.quarto": L10n.text("Quarto"), "climate.sala": L10n.text("Sala"), "light.sala": L10n.text("Sala"), "light.abajur": L10n.text("Quarto"),
         "light.cozinha": L10n.text("Cozinha"), "switch.cafeteira": L10n.text("Cozinha"), "switch.escritorio": L10n.text("Escritório"),
         "cover.sala": L10n.text("Sala"), "fan.escritorio": L10n.text("Escritório"), "sensor.temperatura": L10n.text("Quarto"), "sensor.umidade": L10n.text("Quarto"), "binary_sensor.janela": L10n.text("Sala"), "climate.termostato": L10n.text("Suíte")
@@ -50,10 +61,20 @@ enum DemoHome {
             HAArea(id: name.folding(options: .diacriticInsensitive, locale: Locale(identifier: "pt_BR")).lowercased().replacingOccurrences(of: " ", with: "_"), name: name)
         }
         let ids = Dictionary(uniqueKeysWithValues: rooms.map { ($0.name, $0.id) })
-        return HARegistry(areas: rooms, entities: entities.map { HARegistryEntity(id: $0.id, areaID: areas[$0.id].flatMap { ids[$0] }) })
+        return HARegistry(areas: rooms, devices: [HADevice(id: "robot-demo", name: L10n.text("Aspirador robô"), areaID: ids[L10n.text("Cozinha")])], entities: entities.map {
+            let robot = $0.id.contains("robot_demo")
+            return HARegistryEntity(id: $0.id, deviceID: robot ? "robot-demo" : nil, areaID: robot ? ids[L10n.text("Cozinha")] : areas[$0.id].flatMap { ids[$0] }, platform: robot ? "xiaomi_home" : nil)
+        })
     }
     static func apply(_ command: ServiceCall, to entity: inout HAEntity) {
         switch command.service {
+        case "start": entity.state = "cleaning"
+        case "pause": entity.state = "paused"
+        case "stop": entity.state = "idle"
+        case "return_to_base": entity.state = "returning"
+        case "select_option": entity.state = command.data["option"]?.string ?? entity.state
+        case "set_value": entity.state = command.data["value"]?.number.map { String($0) } ?? entity.state
+        case "press", "send_message": entity.state = ISO8601DateFormatter().string(from: Date())
         case "turn_on":
             if entity.domain == "scene" { entity.state = "2026-10-15T12:00:00Z" }
             else { entity.state = entity.domain == "climate" ? "cool" : "on" }

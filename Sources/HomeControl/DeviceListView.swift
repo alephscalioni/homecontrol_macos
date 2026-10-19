@@ -13,8 +13,9 @@ struct DeviceListView: View {
         (scope.map { store.items(in: $0) } ?? store.categoryItems).sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
     private var results: [HAEntity] {
-        base.filter { entity in
-            !store.isHidden(entity) && (search.isEmpty || entity.name.localizedCaseInsensitiveContains(search) || (store.areas[entity.id] ?? "").localizedCaseInsensitiveContains(search))
+        let values = organizing || !search.isEmpty || store.category == .favorites ? base : store.consolidatedItems(base)
+        return values.filter { entity in
+            !store.isHidden(entity) && (search.isEmpty || HomeWidgetSelection.matches(FavoriteControl(entity: entity, serverID: store.controlServerID, room: store.areas[entity.id]), query: search))
         }
     }
     private var hiddenItems: [HAEntity] { base.filter { store.isHidden($0) } }
@@ -153,7 +154,7 @@ struct DeviceListView: View {
     }
     private func row(_ entity: HAEntity) -> some View {
         HStack(spacing: 12) {
-            if ["climate", "light", "fan", "cover"].contains(entity.domain) {
+            if ["climate", "light", "fan", "cover", "camera", "vacuum"].contains(entity.domain) || store.vacuumOwner(of: entity) != nil {
                 Button { open(entity) } label: {
                     HStack(spacing: 12) {
                         rowIdentity(entity)
@@ -203,6 +204,7 @@ struct DeviceListView: View {
         }.frame(minHeight: 44)
     }
     private func rowTitle(_ entity: HAEntity) -> String {
+        if entity.domain == "vacuum" { return store.deviceName(for: entity) ?? entity.name }
         if store.purpose(of: entity) == .consumption, ConsumptionMetric.period(entity) != nil { return store.deviceName(for: entity) ?? entity.name }
         return entity.name
     }
@@ -221,6 +223,8 @@ struct DeviceListView: View {
     }
     private func icon(_ entity: HAEntity) -> String {
         switch entity.domain {
+        case "camera": return "video"
+        case "vacuum": return "robotic.vacuum"
         case "climate": return "air.conditioner.horizontal"
         case "light": return "lightbulb"
         case "switch": return entity.text("device_class") == "outlet" ? "powerplug" : "lightswitch.on"

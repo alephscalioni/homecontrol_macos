@@ -5,6 +5,8 @@ struct DeviceDetail: View {
     let entity: HAEntity
     var body: some View {
         switch entity.domain {
+        case "camera": CameraDetailView(entity: entity)
+        case "vacuum": VacuumDetailView(entity: entity)
         case "climate": ClimateView(entity: entity)
         case "light": LightView(entity: entity)
         case "fan": FanView(entity: entity)

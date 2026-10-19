@@ -3,7 +3,7 @@ import Combine
 import HomeCore
 
 enum DeviceCategory: String, CaseIterable, Identifiable {
-    case rooms, climate, lights, switches, covers, fans, scenes, sensors, favorites
+    case rooms, climate, lights, switches, covers, fans, cameras, vacuums, scenes, sensors, favorites
     var id: String { rawValue }
     var title: String {
         switch self {
@@ -13,6 +13,8 @@ enum DeviceCategory: String, CaseIterable, Identifiable {
         case .switches: return L10n.text("Interruptores")
         case .covers: return L10n.text("Cortinas")
         case .fans: return L10n.text("Ventilação")
+        case .cameras: return L10n.text("Câmeras")
+        case .vacuums: return L10n.text("Aspiradores")
         case .scenes: return L10n.text("Cenas")
         case .sensors: return L10n.text("Sensores")
         case .favorites: return L10n.text("Favoritos")
@@ -26,6 +28,8 @@ enum DeviceCategory: String, CaseIterable, Identifiable {
         case .switches: return "lightswitch.on"
         case .covers: return "blinds.horizontal.closed"
         case .fans: return "fan"
+        case .cameras: return "video"
+        case .vacuums: return "robotic.vacuum"
         case .scenes: return "sparkles"
         case .sensors: return "sensor"
         case .favorites: return "star"
@@ -39,6 +43,8 @@ enum DeviceCategory: String, CaseIterable, Identifiable {
         case .switches: return entity.domain == "switch"
         case .covers: return entity.isSafeCover
         case .fans: return entity.domain == "fan"
+        case .cameras: return entity.domain == "camera"
+        case .vacuums: return entity.domain == "vacuum"
         case .scenes: return entity.domain == "scene"
         case .sensors: return ["sensor", "binary_sensor"].contains(entity.domain)
         case .favorites: return true
@@ -50,7 +56,7 @@ enum ConnectionPhase { case disconnected, connecting, connected, reconnecting, d
 
 @MainActor
 final class HomeStore: ObservableObject {
-    @Published var entities: [HAEntity] = []
+    @Published var entities: [HAEntity] = [] { didSet { rebuildVacuumOwners() } }
     @Published var phase: ConnectionPhase = .disconnected
     @Published var category: DeviceCategory = .rooms
     @Published var selection: [DeviceCategory: String] = [:]
@@ -63,17 +69,20 @@ final class HomeStore: ObservableObject {
     @Published var areas: [String: String] = [:]
     @Published var registryAreas: [HAArea] = []
     @Published var entityAreaIDs: [String: String] = [:]
-    @Published var registryLoaded = false
+    @Published var registryLoaded = false { didSet { rebuildVacuumOwners() } }
     @Published var registryLoading = false
     @Published var registryRealtime = false
     @Published var roomScope: RoomScope?
     @Published var detailFromRoom = false
     @Published var detailFromFavorites = false
+    @Published var vacuumDetailQuery = ""
     @Published var favoriteIDs = Set(UserDefaults.standard.stringArray(forKey: "favorites") ?? [])
     @Published var metadataNotice: String?
-    @Published private(set) var registryEntries: [String: HARegistryEntity] = [:]
+    @Published private(set) var registryEntries: [String: HARegistryEntity] = [:] { didSet { rebuildVacuumOwners() } }
+    @Published private(set) var vacuumOwners: [String: String] = [:]
     @Published private(set) var registryDevices: [String: HADevice] = [:]
     @Published private(set) var organization = OrganizationPreferences()
+    let cameraConnectionWillChange = PassthroughSubject<Void, Never>()
     private let client = HomeAssistantClient()
     private var connectionTask: Task<Void, Never>?
     private var reconnectTask: Task<Void, Never>?
@@ -97,7 +106,7 @@ final class HomeStore: ObservableObject {
         }
     }
     var selected: HAEntity? { filtered.first { $0.id == selection[category] } ?? filtered.first }
-    var categoryItems: [HAEntity] { entities.filter { $0.isSupported && category.contains($0) && (category != .favorites || favoriteIDs.contains($0.id)) } }
+    var categoryItems: [HAEntity] { entities.filter { isListSupported($0) && category.contains($0) && (category != .favorites || favoriteIDs.contains($0.id)) } }
     var statusLabel: String {
         switch phase {
         case .demo: return L10n.text("Demonstração · dados de exemplo")
@@ -112,15 +121,16 @@ final class HomeStore: ObservableObject {
         client.onEvent = { [weak self] event in
             guard let self else { return }
             switch event {
-            case .snapshot(let values): self.entities = values.filter(\.isSupported)
+            case .snapshot(let values): self.entities = values
             case .changed(let entity):
                 if let index = self.entities.firstIndex(where: { $0.id == entity.id }) {
-                    if entity.isSupported { self.entities[index] = entity } else { self.entities.remove(at: index) }
-                } else if entity.isSupported { self.entities.append(entity) }
+                    self.entities[index] = entity
+                } else { self.entities.append(entity) }
             case .removed(let id): self.entities.removeAll { $0.id == id }
             case .registryChanged: self.scheduleMetadataRefresh()
             case .disconnected(let error):
                 if self.phase == .connected {
+                    self.cameraConnectionWillChange.send()
                     self.errorMessage = self.friendly(error)
                     if error as? HAError == .invalidToken { self.phase = .disconnected; self.showSettings = true }
                     else { self.phase = .reconnecting; self.scheduleReconnect() }
@@ -168,6 +178,7 @@ final class HomeStore: ObservableObject {
         catch { errorMessage = error.localizedDescription; return }
         guard !token.isEmpty else { errorMessage = L10n.text("Cole o token de acesso do seu Home Assistant."); return }
         connectionTask?.cancel(); reconnectTask?.cancel()
+        cameraConnectionWillChange.send()
         connectionGeneration = UUID()
         let current = connectionGeneration
         client.disconnect()
@@ -259,6 +270,7 @@ final class HomeStore: ObservableObject {
     }
     func items(in scope: RoomScope) -> [HAEntity] {
         entities.filter { entity in
+            guard isListSupported(entity) else { return false }
             switch scope {
             case .all: return true
             case .area(let id): return entityAreaIDs[entity.id] == id
@@ -278,16 +290,45 @@ final class HomeStore: ObservableObject {
     var topCategory: DeviceCategory { detailFromFavorites || category == .favorites ? .favorites : (category == .climate && !detailFromRoom ? .climate : .rooms) }
     func showCategory(_ value: DeviceCategory) { detailFromRoom = false; detailFromFavorites = false; category = value }
     func openEntity(_ entity: HAEntity, fromRoom: Bool) {
+        if let robot = vacuumOwner(of: entity) {
+            vacuumDetailQuery = entity.id
+            detailFromFavorites = category == .favorites; detailFromRoom = fromRoom
+            selection[.vacuums] = robot.id; category = .vacuums
+            return
+        }
+        vacuumDetailQuery = ""
         guard let next = DeviceCategory.allCases.first(where: { $0 != .rooms && $0 != .favorites && $0.contains(entity) }) else { return }
         detailFromFavorites = category == .favorites; detailFromRoom = fromRoom; selection[next] = entity.id; category = next
     }
     func returnToRoom() { category = detailFromFavorites ? .favorites : .rooms; detailFromRoom = false; detailFromFavorites = false }
 
     func purpose(of entity: HAEntity) -> EntityPurpose {
-        EntityOrganizer.purpose(for: entity, entry: registryEntries[entity.id], override: organization.purposes[entity.id])
+        if vacuumOwners[entity.id] != nil {
+            return VacuumOrganization.purpose(for: entity, entry: registryEntries[entity.id], override: organization.purposes[entity.id])
+        }
+        return EntityOrganizer.purpose(for: entity, entry: registryEntries[entity.id], override: organization.purposes[entity.id])
     }
     func isHidden(_ entity: HAEntity) -> Bool { organization.isHidden(entity, entry: registryEntries[entity.id]) }
-    func everydayItems(in scope: RoomScope) -> [HAEntity] { items(in: scope).filter { !isHidden($0) && purpose(of: $0).isEveryday } }
+    private func rebuildVacuumOwners() {
+        let values = registryLoaded ? VacuumOrganization.owners(entities: entities, entries: registryEntries) : [:]
+        if values != vacuumOwners { vacuumOwners = values }
+    }
+    func isListSupported(_ entity: HAEntity) -> Bool { entity.isSupported || vacuumOwners[entity.id] != nil }
+    func vacuumOwner(of entity: HAEntity) -> HAEntity? {
+        guard let id = vacuumOwners[entity.id] else { return nil }
+        return entities.first { $0.id == id && !isHidden($0) }
+    }
+    func vacuumItems(for robot: HAEntity) -> [HAEntity] {
+        let owners = vacuumOwners
+        return entities.filter { owners[$0.id] == robot.id && !isHidden($0) }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
+    func consolidatedItems(_ values: [HAEntity]) -> [HAEntity] {
+        let visible = values.filter { !isHidden($0) }
+        let ids = Set(visible.map(\.id)), owners = vacuumOwners
+        return visible.filter { !VacuumOrganization.isConsolidated($0, owners: owners, visibleIDs: ids, preferences: organization) }
+    }
+    func everydayItems(in scope: RoomScope) -> [HAEntity] { consolidatedItems(items(in: scope)).filter { purpose(of: $0).isEveryday } }
+    var compatibleItemCount: Int { consolidatedItems(entities.filter(isListSupported)).count }
     func deviceName(for entity: HAEntity) -> String? { registryEntries[entity.id]?.deviceID.flatMap { registryDevices[$0]?.name } }
     func classify(_ entity: HAEntity, as purpose: EntityPurpose?) {
         organization.purposes[entity.id] = purpose
@@ -339,6 +380,7 @@ final class HomeStore: ObservableObject {
         errorMessage = nil; metadataNotice = nil; feedback = nil
     }
     func stopConnection() {
+        cameraConnectionWillChange.send()
         connectionGeneration = UUID()
         connectionTask?.cancel(); reconnectTask?.cancel(); client.disconnect()
         metadataRefreshTask?.cancel(); metadataPollTask?.cancel()
@@ -369,6 +411,19 @@ final class HomeStore: ObservableObject {
             !isHidden($0) && (purpose(of: $0).isEveryday || $0.domain == "scene" || favoriteIDs.contains($0.id))
                 && HomeWidgetSelection.supports(FavoriteControl(entity: $0, serverID: controlServerID))
         }
+    }
+
+    // A new connection, including a retry, invalidates in-flight camera media.
+    var cameraConnectionID: String { "\(controlServerID)|\(connectionGeneration)|\(canUseSystemControls)" }
+
+    func cameraEntity(id: String) -> HAEntity? {
+        guard canUseSystemControls else { return nil }
+        return widgetEntities.first { $0.domain == "camera" && $0.available && $0.state != "off" && FavoriteControl(entity: $0, serverID: controlServerID).id == id }
+    }
+
+    func cameraRequest(id: String, streaming: Bool = false) throws -> URLRequest {
+        guard !isDemo, let entity = cameraEntity(id: id), entity.available, entity.state != "off" else { throw CameraMediaError.invalidRequest }
+        return try CameraMedia.request(server: serverAddress, token: activeToken, entityID: entity.id, streaming: streaming)
     }
 
     func waitForControlConnection() async throws {
@@ -470,6 +525,8 @@ final class HomeStore: ObservableObject {
         guard let command, canControl,
               let entity = entities.first(where: { $0.id == command.entityID }), entity.available,
               !pendingEntities.contains(command.entityID) else { return }
+        let robotID = entity.domain == "vacuum" ? entity.id : vacuumOwners[entity.id]
+        if let robotID, VacuumOrganization.isBusy(robotID: robotID, owners: vacuumOwners, pendingIDs: pendingEntities) { return }
         let current = connectionGeneration
         let demo = isDemo
         pendingEntities.insert(command.entityID)
