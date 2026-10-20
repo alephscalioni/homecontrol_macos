@@ -84,3 +84,7 @@ A conexão com o Home Assistant e suas preferências são mantidas ao atualizar.
 O token de acesso fica guardado no **Chaves do macOS**. Para removê-lo deste Mac, abra as configurações do HomeControl e escolha **Esquecer conexão**.
 
 Se a conexão cair, o app avisa e tenta reconectar. Os controles ficam indisponíveis até a conexão voltar. Você também pode usar **⋯ → Reconectar** para tentar novamente.
+
+## Windows e Linux
+
+Os [instaladores para Windows, Fedora e Ubuntu](https://github.com/alephscalioni/homecontrol_macos/releases/tag/desktop-v0.5.0) e as [instruções do port](desktop/README.md) estão disponíveis separadamente. Essa versão não inclui widgets.

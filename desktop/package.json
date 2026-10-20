@@ -1,0 +1,86 @@
+{
+  "name": "homecontrol-desktop",
+  "version": "0.5.0",
+  "description": "Home Assistant controls in your system tray",
+  "author": {
+    "name": "Aleph Scalioni",
+    "email": "23325297+alephscalioni@users.noreply.github.com"
+  },
+  "license": "UNLICENSED",
+  "main": "src/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "check": "node --check src/main.cjs && node --check src/preload.cjs && node --check src/ha.cjs && node --check src/model.cjs && node --check src/credentials.cjs && node --check src/popup.cjs && node --check src/renderer.js && node --check src/camera.js",
+    "dist:linux": "electron-builder --linux AppImage deb rpm --x64 --publish never",
+    "dist:win": "electron-builder --win nsis --x64 --publish never",
+    "smoke": "electron . --smoke-test",
+    "smoke:protocol": "node scripts/smoke-protocol.cjs"
+  },
+  "dependencies": {
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "electron": "44.9.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "br.com.homecontrol.desktop",
+    "productName": "HomeControl",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "linux": {
+      "icon": "assets/icon.png",
+      "category": "Utility",
+      "executableArgs": ["--ozone-platform=x11"],
+      "desktop": {
+        "entry": {
+          "StartupWMClass": "homecontrol-desktop",
+          "Comment": "Control your Home Assistant devices"
+        }
+      },
+      "artifactName": "HomeControl-${version}-${arch}.${ext}",
+      "syncDesktopName": true
+    },
+    "deb": {
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libsecret-1-0",
+        "libasound2t64 | libasound2",
+        "libgbm1",
+        "libdrm2",
+        "libxss1",
+        "libuuid1"
+      ]
+    },
+    "win": {
+      "icon": "assets/icon.png",
+      "artifactName": "HomeControl-${version}-Setup.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "rpm": {
+      "compression": "gzip",
+      "fpm": ["--iteration", "8.fc44"]
+    }
+  },
+  "homepage": "https://github.com/alephscalioni/homecontrol_macos",
+  "desktopName": "homecontrol-desktop.desktop"
+}

@@ -84,3 +84,7 @@ Your Home Assistant connection and preferences are kept when updating.
 Your access token is stored in **macOS Keychain**. To remove it from this Mac, open HomeControl settings and choose **Forget connection**.
 
 If the connection drops, the app shows a notice and tries to reconnect. Controls stay unavailable until the connection returns. You can also choose **⋯ → Reconnect** to retry.
+
+## Windows and Linux
+
+The [Windows, Fedora and Ubuntu installers](https://github.com/alephscalioni/homecontrol_macos/releases/tag/desktop-v0.5.0) and [port instructions](desktop/README.md) are available separately. This version does not include widgets.
